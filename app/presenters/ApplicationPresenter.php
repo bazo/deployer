@@ -115,6 +115,9 @@ class ApplicationPresenter extends SecuredPresenter
 		} catch(\Git\ExistingRepositoryException $e) {
 			$this->flash('Repository already exists.', 'error');
 		}
+		catch(\GitWrapper\GitException $e) {
+			$this->flash($e->getMessage(), 'error');
+		}
 		$this->redirect('this');
 	}
 
