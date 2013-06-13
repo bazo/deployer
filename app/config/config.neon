@@ -20,7 +20,7 @@ nette:
 parameters:
 
 	git:
-		binary: '"C:\\Program Files (x86)\\Git\\bin\\git.exe"'
+		binary: 
 		repositories:
 			path: %appDir%/../repositories
 	releasesDir: %appDir%/../releases
