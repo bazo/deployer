@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 read OLDREV NEWREV REF
 
 IFS='/' read -ra PARTS <<< "$REF"
