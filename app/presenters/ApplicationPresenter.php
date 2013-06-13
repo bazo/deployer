@@ -94,6 +94,29 @@ class ApplicationPresenter extends SecuredPresenter
 		}
 		$this->redirect('this');
 	}
+	
+	public function handleCreateDeployFolders()
+	{
+		$settings = $this->application->getSettings();
+		try {
+			$this->deployManager->prepareFoldersForDeploy($settings['deploy_dir']);
+			$this->flash('Deploy folders created', 'success');
+		} catch (\Symfony\Component\Filesystem\Exception\IOException $e) {
+			$this->flash('Cannot create deploy folders. Permissions denied', 'error');
+		}
+		$this->redirect('this');
+	}
+	
+	public function handleCreateRepository()
+	{
+		try {
+			$this->gitManager->createRepository($this->application);
+			$this->flash('Repository created', 'success');
+		} catch(\Git\ExistingRepositoryException $e) {
+			$this->flash('Repository already exists.', 'error');
+		}
+		$this->redirect('this');
+	}
 
 
 }

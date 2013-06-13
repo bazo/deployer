@@ -51,6 +51,9 @@ class GitManager implements EventSubscriberInterface
 	public function createRepository(\Application $application)
 	{
 		$path = $this->formatRepositoryPath($application);
+		if($this->fs->exists($path)) {
+			throw new ExistingRepositoryException(sprintf('Repository for application %s already exist', $application->getName()));
+		}
 		$this->fs->mkdir($path);
 
 		$repo = $this->git->workingCopy($path);
