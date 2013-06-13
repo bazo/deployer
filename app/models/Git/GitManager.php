@@ -69,8 +69,7 @@ class GitManager implements EventSubscriberInterface
 		$repository = $this->git->workingCopy($path);
 		
 		$branches = $repository->getBranches();
-		return $branches->all();
-		
+		return $branches->fetchLocalBranches();
 	}
 	
 	private function formatRepositoryPath(\Application $application)

@@ -42,9 +42,16 @@ class ApplicationPresenter extends SecuredPresenter
 	public function actionDefault($id)
 	{
 		$this->application = $this->applicationManager->loadApplication($id);
-		$branches = $this->gitManager->loadBranches($this->application);
-		$branches += ['master' => 'master'];
-		$this['formSettings']['auto_deploy_branch']->setItems($branches);
+		$branchValues = ['master' => 'master'];
+		try {
+			$branches = $this->gitManager->loadBranches($this->application);
+			foreach($branches as $branch) {
+				$branchValues[$branch] = $branch;
+			}
+		} catch(\GitWrapper\GitException $e) {
+			
+		}
+		$this['formSettings']['auto_deploy_branch']->setItems($branchValues);
 	}
 
 	public function renderDefault()

@@ -67,7 +67,7 @@ class SecuredPresenter extends BasePresenter
 
 		$this->redirect('this');
 	}
-
+	
 
 }
 

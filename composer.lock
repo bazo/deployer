@@ -11,12 +11,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/bazo/git-wrapper.git",
-                "reference": "f2dc15aa9aaf3b7152d401a21abc8c0522fbd95b"
+                "reference": "6789ff3243eb8fd72f20fdbedafad2e3d9ed61a1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bazo/git-wrapper/zipball/f2dc15aa9aaf3b7152d401a21abc8c0522fbd95b",
-                "reference": "f2dc15aa9aaf3b7152d401a21abc8c0522fbd95b",
+                "url": "https://api.github.com/repos/bazo/git-wrapper/zipball/6789ff3243eb8fd72f20fdbedafad2e3d9ed61a1",
+                "reference": "6789ff3243eb8fd72f20fdbedafad2e3d9ed61a1",
                 "shasum": ""
             },
             "require": {
@@ -50,7 +50,7 @@
             "keywords": [
                 "git"
             ],
-            "time": "2013-06-12 19:54:51"
+            "time": "2013-06-13 20:16:45"
         },
         {
             "name": "bazo/nette-document-manager-extension",
@@ -274,12 +274,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/mongodb-odm.git",
-                "reference": "a668eaed01395e3e563a06115e9564ee9f104514"
+                "reference": "4e56e040201640999a14ffcb123c8144dadbbf53"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/mongodb-odm/zipball/a668eaed01395e3e563a06115e9564ee9f104514",
-                "reference": "a668eaed01395e3e563a06115e9564ee9f104514",
+                "url": "https://api.github.com/repos/doctrine/mongodb-odm/zipball/4e56e040201640999a14ffcb123c8144dadbbf53",
+                "reference": "4e56e040201640999a14ffcb123c8144dadbbf53",
                 "shasum": ""
             },
             "require": {
@@ -339,7 +339,7 @@
                 "odm",
                 "persistence"
             ],
-            "time": "2013-06-10 14:27:21"
+            "time": "2013-06-13 15:32:42"
         },
         {
             "name": "ircmaxell/password-compat",
@@ -434,12 +434,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nette/nette.git",
-                "reference": "286e057ea4395343b2529fb8332c36b874cbee98"
+                "reference": "bba73b4ad3bcd5f615deff423a60f0e91bacfe21"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nette/nette/zipball/286e057ea4395343b2529fb8332c36b874cbee98",
-                "reference": "286e057ea4395343b2529fb8332c36b874cbee98",
+                "url": "https://api.github.com/repos/nette/nette/zipball/bba73b4ad3bcd5f615deff423a60f0e91bacfe21",
+                "reference": "bba73b4ad3bcd5f615deff423a60f0e91bacfe21",
                 "shasum": ""
             },
             "require": {
@@ -500,7 +500,7 @@
                 "neon",
                 "templating"
             ],
-            "time": "2013-06-12 10:49:40"
+            "time": "2013-06-13 16:18:14"
         },
         {
             "name": "symfony/console",
