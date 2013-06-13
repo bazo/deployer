@@ -8,9 +8,7 @@ REPOSITORY="${PWD##*/}"
 
 cd ../..
 
-COMMAND="php cli hooks:post-receive \"$REPOSITORY\" \"$OLDREV\" \"$NEWREV\" \"$REF\""
-
-echo $COMMAND
+COMMAND="php cli hooks:post-receive $REPOSITORY $OLDREV $NEWREV $REF"
 
 exec $COMMAND
 
