@@ -75,16 +75,16 @@ class DeployManager extends \BaseManager
 		try {
 			$commands = $this->parseCommandFile($releaseDir);
 		} catch (\Nette\Utils\NeonException $e) {
-			$this->output->writeln('Unable to read command file, aborting. Reason: ' . $e->getMessage());
+			$this->output->writeln(sprintf('<error>Unable to read command file, aborting. Reason: %s</error>', $e->getMessage()));
 			return;
 		}
 
 		//run after receive hooks
 		try {
-			$this->output->writeln('Running after receive hooks');
+			$this->output->writeln('<info>Running after receive hooks</info>');
 			$this->runHooks($commands['afterReceiveHooks'], $releaseDir);
 		} catch (DeployException $e) {
-			$this->output->writeln('After receive hooks failed. Deploy aborted.');
+			$this->output->writeln('<error>After receive hooks failed. Deploy aborted.<error>');
 			return;
 		}
 
@@ -93,10 +93,10 @@ class DeployManager extends \BaseManager
 
 		//run before deploy hooks
 		try {
-			$this->output->writeln('Running before deploy hooks');
+			$this->output->writeln('<info>Running before deploy hooks</info>');
 			$this->runHooks($commands['beforeDeployHooks'], $liveReleaseDir);
 		} catch (DeployException $e) {
-			$this->output->writeln('Before deploy hooks failed. Deploy aborted.');
+			$this->output->writeln('<error>Before deploy hooks failed. Deploy aborted.</error>');
 			return;
 		}
 
@@ -106,12 +106,14 @@ class DeployManager extends \BaseManager
 		
 		//run after deploy hooks
 		try {
-			$this->output->writeln('Running after deploy hooks');
+			$this->output->writeln('<info>Running after deploy hooks</info>');
 			$this->runHooks($commands['afterDeployHooks'], $liveReleaseDir);
 		} catch (DeployException $e) {
-			$this->output->writeln('After deploy hooks failed');
+			$this->output->writeln('<error>After deploy hooks failed</error>');
 			return;
 		}
+		
+		$this->output->writeln('<info>Application deployed!</info>');
 	}
 
 
@@ -122,6 +124,7 @@ class DeployManager extends \BaseManager
 			$output = [];
 			$returnVar = NULL;
 			foreach ($commands as $command) {
+				$output = [];
 				$this->output->writeln($command);
 				exec(escapeshellcmd($command), $output, $returnVar);
 				if ($returnVar !== 0) {
@@ -182,7 +185,7 @@ class DeployManager extends \BaseManager
 				}
 
 				if (isset($hooks['before_deploy']) and is_array($hooks['before_deploy'])) {
-					$beforeDeployHooks = $hooks['after_deploy'];
+					$beforeDeployHooks = $hooks['before_deploy'];
 				}
 
 				if (isset($hooks['after_deploy']) and is_array($hooks['after_deploy'])) {
@@ -225,12 +228,15 @@ class DeployManager extends \BaseManager
 		foreach ($sharedDirs as $dirName) {
 			$originDir = $rootDir . '/shared/' . $dirName;
 			
+			if(!$this->fs->exists($originDir)) {
+				$this->fs->mkdir($originDir, 0755);
+			}
+			
 			if ($this->fs->exists($dirName)) {
 				exec(sprintf('rm -rf %s', escapeshellarg($dirName)));
-				$this->fs->symlink($originDir, $dirName, TRUE);
 			}
 			try {
-				$this->fs->symlink($originDir, $targetDir, TRUE);
+				$this->fs->symlink($originDir, $dirName, TRUE);
 			} catch (IOException $e) {
 				$this->output->writeln(sprintf('<error>%s</error>', $e->getMessage()));
 				//maybe we're on windows

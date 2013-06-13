@@ -7,10 +7,10 @@ use Applications\DeployManager;
 use Applications\ApplicationManager;
 
 /**
- * Git post receive hook
+ * Git pre recieve hook
  * @author Martin Bažík <martin@bazo.sk>
  */
-class GitPostReceiveHook extends Console\Command\Command
+class GitPreReceiveHook extends Console\Command\Command
 {
 
 	/** @var DeployManager */
@@ -32,7 +32,7 @@ class GitPostReceiveHook extends Console\Command\Command
 
 	protected function configure()
 	{
-		$this->setName('hooks:post-receive')
+		$this->setName('hooks:pre-receive')
 				->addArgument('repository')
 				->addArgument('oldrev')
 				->addArgument('newrev')
@@ -53,9 +53,9 @@ class GitPostReceiveHook extends Console\Command\Command
 		$application = $this->applicationManager->loadApplicationByRepoName($repository);
 		if($application === NULL) {
 			$output->writeln(sprintf('<error>Cannot find application for repository %s</error>', $repository));
-			return;
+			exit(1);
 		}
-		$this->deployManager->deploy($application, $branch, $newrev);
+		
 	}
 
 

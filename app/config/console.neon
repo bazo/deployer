@@ -18,6 +18,11 @@ services:
 	postReceive:
 		class: Console\Command\GitPostReceiveHook
 		tags: [consoleCommand]
+
+	preReceive:
+		class: Console\Command\GitPreReceiveHook
+		tags: [consoleCommand]
+
 	#helpers
 	dialog:
 		class: \Symfony\Component\Console\Helper\DialogHelper
