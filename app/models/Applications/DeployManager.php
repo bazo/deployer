@@ -197,7 +197,7 @@ class DeployManager extends \BaseManager
 			'sharedFolders' => $sharedFolders,
 			'afterReceiveHooks' => $afterReceiveHooks,
 			'beforeDeployHooks' => $beforeDeployHooks,
-			'afterDeployHooks' => $beforeDeployHooks
+			'afterDeployHooks' => $afterDeployHooks
 		];
 	}
 
