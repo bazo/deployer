@@ -51,7 +51,6 @@ class DeployManager extends \BaseManager
 	{
 		$folders = [
 			$path . '/releases',
-			$path . '/live',
 			$path . '/shared',
 		];
 		
@@ -85,24 +84,34 @@ class DeployManager extends \BaseManager
 			$this->output->writeln('Running after receive hooks');
 			$this->runHooks($commands['afterReceiveHooks'], $releaseDir);
 		} catch (DeployException $e) {
-			$this->output->writeln('After receive hooks failed. Deploy aborted');
+			$this->output->writeln('After receive hooks failed. Deploy aborted.');
 			return;
 		}
 
-		$targetDir = $applicationSettings['deploy_dir'];
-		$liveReleaseDir = $this->copyRelease($releaseDir, $targetDir, $release);
+		$rootDir = $applicationSettings['deploy_dir'];
+		$liveReleaseDir = $this->copyRelease($releaseDir, $rootDir, $release);
 
 		//run before deploy hooks
 		try {
 			$this->output->writeln('Running before deploy hooks');
 			$this->runHooks($commands['beforeDeployHooks'], $liveReleaseDir);
 		} catch (DeployException $e) {
-			$this->output->writeln('Before deploy hooks failed. Deploy aborted');
+			$this->output->writeln('Before deploy hooks failed. Deploy aborted.');
 			return;
 		}
 
 		//symlink shared folders
-		$this->linkSharedDirs($liveReleaseDir, $targetDir, $commands['sharedFolders']);
+		$this->linkSharedDirs($liveReleaseDir, $rootDir, $commands['sharedFolders']);
+		$this->switchLiveDeploy($liveReleaseDir, $rootDir);
+		
+		//run after deploy hooks
+		try {
+			$this->output->writeln('Running after deploy hooks');
+			$this->runHooks($commands['afterDeployHooks'], $liveReleaseDir);
+		} catch (DeployException $e) {
+			$this->output->writeln('After deploy hooks failed');
+			return;
+		}
 	}
 
 
@@ -212,11 +221,13 @@ class DeployManager extends \BaseManager
 
 	private function linkSharedDirs($liveReleaseDir, $rootDir, $sharedDirs = [])
 	{
+		chdir($liveReleaseDir);
 		foreach ($sharedDirs as $dirName) {
-			$originDir = $liveReleaseDir . '/' . $dirName;
-			$targetDir = $rootDir . '/shared/' . $dirName;
-			if (!$this->fs->exists($targetDir)) {
-				$this->fs->mkdir($targetDir);
+			$originDir = $rootDir . '/shared/' . $dirName;
+			
+			if ($this->fs->exists($dirName)) {
+				exec(sprintf('rm -rf %s', escapeshellarg($dirName)));
+				$this->fs->symlink($originDir, $dirName, TRUE);
 			}
 			try {
 				$this->fs->symlink($originDir, $targetDir, TRUE);
@@ -224,10 +235,9 @@ class DeployManager extends \BaseManager
 				$this->output->writeln(sprintf('<error>%s</error>', $e->getMessage()));
 				//maybe we're on windows
 				if (defined('PHP_WINDOWS_VERSION_MAJOR')) {
-					chdir($liveReleaseDir);
 					$output = [];
 					$returnVar = NULL;
-					$command = sprintf('mklink /D %s %s', escapeshellarg($dirName), escapeshellarg($targetDir));
+					$command = sprintf('mklink /D %s %s', escapeshellarg($dirName), escapeshellarg($originDir));
 					exec($command, $output, $returnVar);
 					if ($returnVar !== 0) {
 						$this->output->writeln(sprintf('<error>Cannot create symbolik link on windows. You need administrative privileges.</error>', $e->getMessage()));
@@ -243,15 +253,15 @@ class DeployManager extends \BaseManager
 	private function switchLiveDeploy($liveReleaseDir, $rootDir)
 	{
 		try {
-			$this->fs->symlink($originDir, $targetDir, TRUE);
+			chdir($rootDir);
+			$this->fs->symlink($liveReleaseDir, 'live', TRUE);
 		} catch (IOException $e) {
 			$this->output->writeln(sprintf('<error>%s</error>', $e->getMessage()));
 			//maybe we're on windows
 			if (defined('PHP_WINDOWS_VERSION_MAJOR')) {
-				chdir($liveReleaseDir);
 				$output = [];
 				$returnVar = NULL;
-				$command = sprintf('mklink /D %s %s', escapeshellarg($dirName), escapeshellarg($targetDir));
+				$command = sprintf('mklink /D %s %s', escapeshellarg('live'), escapeshellarg($liveReleaseDir));
 				exec($command, $output, $returnVar);
 				if ($returnVar !== 0) {
 					$this->output->writeln(sprintf('<error>Cannot create symbolik link on windows. You need administrative privileges.</error>', $e->getMessage()));
