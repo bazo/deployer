@@ -1,0 +1,55 @@
+#
+# SECURITY WARNING: it is CRITICAL that this file & directory are NOT accessible directly via a web browser!
+#
+# If you don't protect this directory from direct web access, anybody will be able to see your passwords.
+# http://nette.org/security-warning
+#
+php:
+	date.timezone: Europe/Prague
+	# zlib.output_compression: yes
+
+nette:
+	application:
+		errorPresenter: Error
+		mapping:
+			*: Commander\*Module\*Presenter
+
+	session:
+		expiration: 14 days
+
+parameters:
+
+	git:
+		binary: '"C:\\Program Files (x86)\\Git\\bin\\git.exe"'
+		repositories:
+			path: %appDir%/../repositories
+	releasesDir: %appDir%/../releases
+documentManager:
+	dbname: commander
+	uri: mongodb://localhost/commander
+	cachePrefix: commander
+	metaDataCacheClass: \Doctrine\Common\Cache\ArrayCache
+
+services:
+
+	- GitWrapper\GitWrapper(%git.binary%)
+	- Symfony\Component\Filesystem\Filesystem
+	- Applications\DeployManager(%releasesDir%, %git.repositories.path%)
+	- Symfony\Component\Console\Output\ConsoleOutput(Symfony\Component\Console\Output\OutputInterface::VERBOSITY_DEBUG)
+
+	#routing
+	- App\RouterFactory
+	router: @App\RouterFactory::createRouter
+
+	#security
+	- Security\UserManager
+
+	#applications
+	- Applications\ApplicationManager
+
+	#git
+	gitManager:
+		class: Git\GitManager(%git.repositories.path%, %appDir%/config/hooks)
+		tags: [subscriber]
+
+factories:

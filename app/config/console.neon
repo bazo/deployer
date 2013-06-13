@@ -1,0 +1,40 @@
+services:
+	#commands
+	deleteCache:
+		class: Console\Command\DeleteCache
+		tags: [consoleCommand]
+
+	install:
+		class: Console\Command\Install
+		tags: [consoleCommand]
+
+	createUser:
+		class: Console\Command\CreateUser
+		tags: [consoleCommand]
+		setup:
+			- setUserManager(...)
+
+	#hooks
+	postReceive:
+		class: Console\Command\GitPostReceiveHook
+		tags: [consoleCommand]
+	#helpers
+	dialog:
+		class: \Symfony\Component\Console\Helper\DialogHelper
+		tags: [consoleHelper]
+
+	progress:
+		class: \Symfony\Component\Console\Helper\ProgressHelper
+		tags: [consoleHelper]
+
+	formatter:
+		class: \Symfony\Component\Console\Helper\FormatterHelper
+		tags: [consoleHelper]
+
+	dm:
+		class: \Doctrine\ODM\MongoDB\Tools\Console\Helper\DocumentManagerHelper
+		tags: [consoleHelper]
+
+	documentManager:
+		class: \Doctrine\ODM\MongoDB\Tools\Console\Helper\DocumentManagerHelper
+		tags: [consoleHelper]

@@ -1,0 +1,16 @@
+#!/bin/sh
+read OLDREV NEWREV REF
+
+IFS='/' read -ra PARTS <<< "$REF"
+
+BRANCH=${PARTS[2]}
+REPOSITORY="${PWD##*/}"
+
+cd ../..
+
+COMMAND="php cli hooks:post-receive \"$REPOSITORY\" \"$OLDREV\" \"$NEWREV\" \"$REF\""
+
+echo $COMMAND
+
+exec $COMMAND
+

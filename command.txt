@@ -1,0 +1,1 @@
+php cli hooks:post-receive "invoicely-eu" "83c3f8be1836fa2bbafd31b1fae4d32e04639389" "1c819b3adae241c3a9b2d598654ae6a92de9404e" "refs/heads/master"

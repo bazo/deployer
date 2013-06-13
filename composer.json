@@ -1,0 +1,20 @@
+{
+	"name": "bazo/sandbox",
+	"description": "Nette Framework sandbox with bootstrap and symfony console.",
+	"require": {
+		"php": ">= 5.4.0",
+		"nette/nette": "@dev",
+		"symfony/console": "@dev",
+		"symfony/event-dispatcher": "@dev",
+		"symfony/filesystem": "@dev",
+		"doctrine/mongodb-odm": "@dev",
+		"kdyby/bootstrap-form-renderer": "@dev",
+		"ircmaxell/password-compat": "@dev",
+		"bazo/nette-document-manager-extension": "@dev",
+		"bazo/git-wrapper": "@dev",
+		"cypresslab/gitelephant": "@dev"
+	},
+	"require-dev": {
+		"nette/tester": "@dev"
+	}
+}
