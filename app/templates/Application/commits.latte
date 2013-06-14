@@ -2,6 +2,49 @@
 <div class="tab-content">
 	<div class="row">
 		<div class="span12">
+
+			<table id="commits" class="table table-condensed" n:inner-foreach="$commitsByDate as $date => $commits">
+				<tr class="date">
+					<td class="muted" {if $iterator->isFirst()}colspan="3"{else}colspan="4"{/}><h4>{$date}</h4></td>
+					<td>{first}{include #branchpicker branches => $branches}{/first}</td>
+				</tr>
+				{include #commits commits => $commits}
+			</table>
 		</div>
 	</div>
-</div>
+{dump $branches}
+
+{define #commits}
+
+	<tr class="commit media" n:foreach="$commits as $commit">
+		<td class="gravatar">
+			<img class="media-object" data-src="{$commit['author_email']|gravatar}" src="{$commit['author_email']|gravatar}" width="30" height="30">
+		</td>
+		<td class="commit-message">
+			<span>{$commit['message']}</span>
+		</td>
+
+		<td class="commit-info">
+			<p>{$commit['author_email']} - <span data-livestamp="{$commit['timestamp']}">{$commit['time_relative']}</span></p>
+			<p class="muted">commit: {$commit['hash']}</p>
+		</td>
+
+		<td class="deploy-button">
+			<a href="" class="btn btn-success">Deploy</a>
+		</td>
+
+	</tr>
+
+{/}
+
+{define #branchpicker}
+	<div class="btn-group">
+		<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+			{$selectedBranch}
+			<span class="caret"></span>
+		</a>
+		<ul class="dropdown-menu">
+			<li n:foreach="$branches as $branch"><a tabindex="-1" n:href="changeBranch! branch => $branch">{$branch}</a></li>
+		</ul>
+	</div>
+{/}

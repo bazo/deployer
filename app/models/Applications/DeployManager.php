@@ -9,6 +9,9 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 use GitWrapper\GitWrapper;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Console\Helper\FormatterHelper;
+use Nette\Utils\Finder;
+use Nette\Utils\Strings;
+
 
 /**
  * Description of DeployManager
@@ -32,7 +35,6 @@ class DeployManager extends \BaseManager
 
 	/** @var GitWrapper */
 	private $git;
-
 
 	public function __construct($releasesDir, $repositoriesDir, DocumentManager $dm, EventDispatcher $mediator, Filesystem $fs, ConsoleOutput $output, GitWrapper $git)
 	{
@@ -64,12 +66,14 @@ class DeployManager extends \BaseManager
 	public function deploy(\Application $application, $branch, $revision)
 	{
 		$applicationSettings = $application->getSettings();
-		if ($applicationSettings['auto_deploy'] !== TRUE and $applicationSettings['auto_deploy_branch'] !== $branch) {
+		if ($applicationSettings['auto_deploy'] !== TRUE or $applicationSettings['auto_deploy_branch'] !== $branch) {
 			return;
 		}
 
-		$release = new \Release($application, $branch);
-
+		$release = new \Release($application, $branch, $revision);
+		$application->setCurrentRelease($release);
+		$this->dm->persist($application);
+		
 		$this->output->writeln(sprintf('Deploying branch <info>%s</info> release <info>%s</info>', $branch, $release->getNumber()));
 
 		$releaseDir = $this->prepareDeployFiles($application, $branch, $revision, $release);
@@ -141,10 +145,10 @@ class DeployManager extends \BaseManager
 	}
 
 
-	private function releaseSuccess(\Release $releaase)
+	private function releaseSuccess(\Release $release)
 	{
-		$releaase->success();
-		$this->dm->persist($releaase);
+		$release->success();
+		$this->dm->persist($release);
 		$this->dm->flush();
 	}
 
@@ -190,16 +194,25 @@ class DeployManager extends \BaseManager
 	private function prepareDeployFiles(\Application $application, $branch, $revision, $release)
 	{
 		$releaseDir = $this->releasesDir . '/' . $release->getNumber();
-		$repository = $this->repostioriesDir . '/' . $application->getRepoName();
+		$repositoryPath = $this->repostioriesDir . '/' . $application->getRepoName();
 		$this->fs->mkdir($releaseDir);
+		$this->git->cloneRepository($repositoryPath, $releaseDir);
 
-		$this->git->cloneRepository($repository, $releaseDir);
-
-		//delete the .git direcotry
-		$dir = getcwd();
 		chdir($releaseDir);
-		exec('rm -r -f .git');
-		chdir($dir);
+		
+		//checkout the desired branch
+		$output = [];
+		$returnVar = NULL;
+		exec(sprintf('git --git-dir=%s/.git --work-tree=%s checkout %s', $releaseDir, $releaseDir, escapeshellarg($branch)), $output, $returnVar);
+		
+		//delete the .git direcotry
+		$this->fs->chmod('.git', 0777);
+		$output = [];
+		$returnVar = NULL;
+		exec('rm -r -f .git 2>&1', $output, $returnVar);
+		if($returnVar !== 0) {
+			$this->output->writeln('Could not remove .git folder. Falling back to stupid file copy.');
+		}
 		return $releaseDir;
 	}
 
@@ -256,11 +269,24 @@ class DeployManager extends \BaseManager
 
 		$liveReleaseDir = $targetDir . '/releases/' . $release;
 
-		//move to releases folder
-		chdir($releaseDir . '/../');
-
-		exec(sprintf('cp -ar %s %s', escapeshellarg(basename($releaseDir)), escapeshellarg($liveReleaseDir)));
+		//stupid copy
+		if($this->fs->exists($releaseDir.'/.git')) {
+			$filesAndFolders = Finder::find('*')->in($releaseDir);
+			$this->fs->mkdir($liveReleaseDir);
+			foreach($filesAndFolders as $file) {
+				//ignore .git files
+				if(!Strings::startsWith($file->getFilename(), '.git')) {
+					exec(sprintf('cp -ar %s %s', escapeshellarg($file->getRealpath()), escapeshellarg($liveReleaseDir.'/'.$file->getFilename())));
+				}
+			}
+		} else {
+			//move to releases folder
+			chdir($releaseDir . '/../');
+			exec(sprintf('cp -ar %s %s', escapeshellarg(basename($releaseDir)), escapeshellarg($liveReleaseDir)));
+		}
+		
 		chdir($targetDir);
+		//change dir only to execute mode
 		try {
 			$this->fs->chmod($release, 0555, 0000, $recursive = TRUE);
 		} catch (IOException $e) {

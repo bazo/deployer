@@ -39,6 +39,12 @@ class Application
 	private $settings;
 	
 	/**
+	 * @ODM\ReferenceOne(targetDocument="Release")
+	 * @var Release
+	 */
+	private $currentRelease;
+	
+	/**
 	 * @param string $name
 	 */
 	public function __construct($name)
@@ -83,6 +89,15 @@ class Application
 	{
 		return $this->repoName;
 	}
+
+	
+	public function setCurrentRelease(Release $currentRelease)
+	{
+		$this->currentRelease = $currentRelease;
+		return $this;
+	}
+
+
 
 
 

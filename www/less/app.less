@@ -7,3 +7,47 @@
 #new-app-button {
 	margin-right: 20px;
 }
+
+#commits {
+	
+	.date {
+		font-size: 120%;
+		border: none;
+		
+		&:first-child{
+			td {
+			border: none;
+		}
+		}
+	}
+	.commit {
+		font-size: 90%;
+		padding: 15px;
+		.gravatar {
+			vertical-align: middle;
+			img {
+			}
+		}
+		
+		.commit-message {
+			width: 53%;
+			font-weight: bold;
+			vertical-align: middle;
+			span {
+				display: block;
+			}
+		}
+		
+		.commit-info {
+			vertical-align: middle;
+			width: 35%;
+			p {
+				margin-bottom: 0;
+			}
+		}
+		
+		.deploy-button {
+			vertical-align: middle;
+		}
+	}
+}

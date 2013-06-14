@@ -56,10 +56,11 @@ class Release
 
 	/**
 	 * @ODM\String
+	 * @ODM\Index
 	 * @var string
 	 */
 	private $commit;
-
+	
 	/**
 	 * @ODM\String
 	 * @var string
@@ -67,10 +68,11 @@ class Release
 	private $message;
 
 
-	public function __construct(\Application $application, $branch)
+	public function __construct(\Application $application, $branch, $commit)
 	{
 		$this->application = $application;
 		$this->branch = $branch;
+		$this->commit = $commit;
 
 		$this->date = new \DateTime;
 		$this->number = $this->date->format('YmdHis');

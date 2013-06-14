@@ -5,7 +5,7 @@ namespace Commander;
 use Applications\ApplicationManager;
 use Git\GitManager;
 use Applications\DeployManager;
-use Nette\Application\UI\Form;
+use Commander\Application\UI\Form\Form;
 use Symfony\Component\Filesystem\Exception\IOException;
 use GitWrapper\GitException;
 
@@ -43,19 +43,45 @@ class ApplicationPresenter extends SecuredPresenter
 		$this->repositoriesPath = $this->context->parameters['git']['repositories']['path'];
 		$id = $this->getParameter('id');
 		$this->application = $this->applicationManager->loadApplication($id);
+		
+		$activeBranch = $this->gitManager->getActiveBranch($this->application);
 	}
 
 	
-	public function renderHistory()
+	public function renderReleases()
 	{
 		$releaseHistory = $this->applicationManager->getReleaseHistory($this->application);
 		
 		$this->template->releaseHistory = $releaseHistory;
 	}
 
+	public function renderCommits()
+	{
+		$branches = $this->gitManager->loadBranches($this->application);;
+		$selectedBranch = $this->getHttpRequest()->getCookie($this->user->getId().'-branch');
+		$selectedBranch = $selectedBranch !== NULL ? $selectedBranch : $branches[0];
+		
+		$log = $this->gitManager->loadCommits($this->application, $selectedBranch);
+		
+		$commitsByDate = [];
+		foreach($log as $commit) {
+			$date = date('Y-m-d', $commit['timestamp']);
+			$commitsByDate[$date][] = $commit;
+		}
+		
+		$this->template->commitsByDate = $commitsByDate;
+		$this->template->branches = $branches;
+		$this->template->selectedBranch = $selectedBranch;
+	}
+	
 	public function actionSettings()
 	{
-		
+		$branchValues = $this->createBranchValues();
+		$this['formSettings']['auto_deploy_branch']->setItems($branchValues);
+	}
+
+	private function createBranchValues()
+	{
 		$branchValues = ['master' => 'master'];
 		try {
 			$branches = $this->gitManager->loadBranches($this->application);
@@ -65,9 +91,9 @@ class ApplicationPresenter extends SecuredPresenter
 		} catch (\GitWrapper\GitException $e) {
 			
 		}
-		$this['formSettings']['auto_deploy_branch']->setItems($branchValues);
+		return $branchValues;
 	}
-
+	
 
 	public function renderSettings()
 	{
@@ -152,6 +178,12 @@ class ApplicationPresenter extends SecuredPresenter
 		} catch (IOException $e) {
 			$this->flash($e->getMessage(), 'error');
 		}
+		$this->redirect('this');
+	}
+	
+	public function handleChangeBranch($branch)
+	{
+		$this->getHttpResponse()->setCookie($this->user->getId().'-branch', $branch, PHP_INT_MAX); //expire somewhere in far future
 		$this->redirect('this');
 	}
 

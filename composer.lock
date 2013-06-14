@@ -434,12 +434,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nette/nette.git",
-                "reference": "bba73b4ad3bcd5f615deff423a60f0e91bacfe21"
+                "reference": "edd9943f48bc20150d5cb9882f3586a7f7ee0746"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nette/nette/zipball/bba73b4ad3bcd5f615deff423a60f0e91bacfe21",
-                "reference": "bba73b4ad3bcd5f615deff423a60f0e91bacfe21",
+                "url": "https://api.github.com/repos/nette/nette/zipball/edd9943f48bc20150d5cb9882f3586a7f7ee0746",
+                "reference": "edd9943f48bc20150d5cb9882f3586a7f7ee0746",
                 "shasum": ""
             },
             "require": {
@@ -500,7 +500,7 @@
                 "neon",
                 "templating"
             ],
-            "time": "2013-06-13 16:18:14"
+            "time": "2013-06-13 23:57:35"
         },
         {
             "name": "symfony/console",
@@ -706,12 +706,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nette/tester.git",
-                "reference": "dfd266ff2956638716fe338c1816e745baf249d8"
+                "reference": "7ff0af99a7bf7b7fb4577d2094ecc3b87e286ba3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nette/tester/zipball/dfd266ff2956638716fe338c1816e745baf249d8",
-                "reference": "dfd266ff2956638716fe338c1816e745baf249d8",
+                "url": "https://api.github.com/repos/nette/tester/zipball/7ff0af99a7bf7b7fb4577d2094ecc3b87e286ba3",
+                "reference": "7ff0af99a7bf7b7fb4577d2094ecc3b87e286ba3",
                 "shasum": ""
             },
             "require": {
@@ -749,7 +749,7 @@
                 "testing",
                 "unit"
             ],
-            "time": "2013-05-17 14:57:08"
+            "time": "2013-06-14 00:03:49"
         }
     ],
     "aliases": [

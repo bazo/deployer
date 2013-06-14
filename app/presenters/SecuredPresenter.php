@@ -3,6 +3,7 @@
 namespace Commander;
 
 use Commander\Application\UI\Form\Form;
+use Nette\Utils\Strings;
 
 /**
  * Secured presenter.
@@ -68,6 +69,14 @@ class SecuredPresenter extends BasePresenter
 		$this->redirect('applications:');
 	}
 	
+	protected function beforeRender()
+	{
+		parent::beforeRender();
+		$this->template->registerHelper('gravatar', function($email, $size = 30){
+			$hash = md5(Strings::lower(Strings::trim($email)));
+			return sprintf('http://www.gravatar.com/avatar/%s?s=%d', $hash, $size);
+		});
+	}
 
 }
 
