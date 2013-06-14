@@ -1,0 +1,13 @@
+parameters:
+	git:
+		binary: #leave empty for autodetection
+
+	db:
+		name: commander
+
+	git:
+		binary: 
+		repositories:
+			path: %appDir%/../repositories
+
+	releasesDir: %appDir%/../releases

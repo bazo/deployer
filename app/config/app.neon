@@ -24,17 +24,21 @@ parameters:
 		repositories:
 			path: %appDir%/../repositories
 	releasesDir: %appDir%/../releases
+
+	db:
+		name: commander
+
 documentManager:
-	dbname: commander
-	uri: mongodb://localhost/commander
-	cachePrefix: commander
+	dbname: %db.name%
+	uri: mongodb://localhost/%db.name%
+	cachePrefix: %db.name%
 	metaDataCacheClass: \Doctrine\Common\Cache\ArrayCache
 
 services:
 
+	#utilities
 	- GitWrapper\GitWrapper(%git.binary%)
 	- Symfony\Component\Filesystem\Filesystem
-	- Applications\DeployManager(%releasesDir%, %git.repositories.path%)
 	- Symfony\Component\Console\Output\ConsoleOutput(Symfony\Component\Console\Output\OutputInterface::VERBOSITY_DEBUG)
 
 	#routing
@@ -46,6 +50,7 @@ services:
 
 	#applications
 	- Applications\ApplicationManager
+	- Applications\DeployManager(%releasesDir%, %git.repositories.path%)
 
 	#git
 	gitManager:

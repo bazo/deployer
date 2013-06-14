@@ -2,8 +2,8 @@
 
 namespace Commander;
 
-use Nette,
-	Model;
+use Nette;
+use Commander\Application\UI\Form\Form;
 
 /**
  * Sign in/out presenters.
@@ -13,11 +13,11 @@ class SignPresenter extends BasePresenter
 
 	/**
 	 * Sign-in form factory.
-	 * @return Nette\Application\UI\Form
+	 * @return Form
 	 */
 	protected function createComponentSignInForm()
 	{
-		$form = new Nette\Application\UI\Form;
+		$form = new Form;
 		$form->addText('login', 'Login:')
 				->setRequired('Please enter your username.');
 
@@ -33,7 +33,7 @@ class SignPresenter extends BasePresenter
 		return $form;
 	}
 
-	public function signInFormSucceeded($form)
+	public function signInFormSucceeded(Form $form)
 	{
 		$values = $form->getValues();
 

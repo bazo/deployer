@@ -2,7 +2,7 @@
 
 namespace Commander;
 
-use Nette\Application\UI\Form;
+use Commander\Application\UI\Form\Form;
 
 /**
  * Secured presenter.
@@ -65,7 +65,7 @@ class SecuredPresenter extends BasePresenter
 			$this->flash($e->getMessage(), 'error');
 		}
 
-		$this->redirect('this');
+		$this->redirect('applications:');
 	}
 	
 

@@ -38,7 +38,7 @@ $configurator->createRobotLoader()
 	->register();
 
 // Create Dependency Injection container from config.neon file
-$configurator->addConfig(__DIR__ . '/config/config.neon', $configurator::NONE);
+$configurator->addConfig(__DIR__ . '/config/app.neon', $configurator::NONE);
 
 $configurator->onCompile[] = function (\Nette\Configurator $configurator, \Nette\DI\Compiler $compiler) {
 	$compiler->addExtension('documentManager', new \Bazo\MongoDb\DI\DocumentManagerExtension());
@@ -47,7 +47,7 @@ $configurator->onCompile[] = function (\Nette\Configurator $configurator, \Nette
 	$compiler->addExtension('mediator', new \Extensions\MediatorExtension);
 };
 
-$localConfig = __DIR__ . '/config/config.local.neon';
+$localConfig = __DIR__ . '/config/config.neon';
 if (file_exists($localConfig)) {
 	$configurator->addConfig($localConfig);
 }

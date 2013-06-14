@@ -3,7 +3,7 @@
 !web.config
 !www/vendor
 vendor
-app/config/config.local.neon
+app/config/config.neon
 app/config/environment
 nbproject
 npm-debu.log

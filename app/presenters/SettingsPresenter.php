@@ -2,7 +2,7 @@
 
 namespace Commander;
 
-use Nette\Application\UI\Form;
+use Commander\Application\UI\Form\Form;
 
 /**
  * Description of SettingsPresenter

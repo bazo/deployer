@@ -8,6 +8,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use GitWrapper\GitWrapper;
 use Symfony\Component\Filesystem\Exception\IOException;
+use Symfony\Component\Console\Helper\FormatterHelper;
 
 /**
  * Description of DeployManager
@@ -43,6 +44,7 @@ class DeployManager extends \BaseManager
 		$this->git = $git;
 	}
 
+
 	/**
 	 * @param type $path
 	 * @throws IOException
@@ -53,7 +55,7 @@ class DeployManager extends \BaseManager
 			$path . '/releases',
 			$path . '/shared',
 		];
-		
+
 		//$this->fs->chmod($path, 0777);
 		$this->fs->mkdir($folders);
 	}
@@ -66,16 +68,17 @@ class DeployManager extends \BaseManager
 			return;
 		}
 
-		$date = new \DateTime;
-		$release = $date->format('YmdHis');
+		$release = new \Release($application, $branch);
 
-		$this->output->writeln(sprintf('Deploying branch <info>%s</info> release <info>%s</info>', $branch, $release));
+		$this->output->writeln(sprintf('Deploying branch <info>%s</info> release <info>%s</info>', $branch, $release->getNumber()));
 
 		$releaseDir = $this->prepareDeployFiles($application, $branch, $revision, $release);
 		try {
 			$commands = $this->parseCommandFile($releaseDir);
 		} catch (\Nette\Utils\NeonException $e) {
-			$this->output->writeln(sprintf('<error>Unable to read command file, aborting. Reason: %s</error>', $e->getMessage()));
+			$reason = 'Unable to read command file, aborting. Reason: ' . $e->getMessage();
+			$this->releaseFail($release, $reason);
+			$this->output->writeln(sprintf('<error>%s</error>', $reason));
 			return;
 		}
 
@@ -84,7 +87,9 @@ class DeployManager extends \BaseManager
 			$this->output->writeln('<info>Running after receive hooks</info>');
 			$this->runHooks($commands['afterReceiveHooks'], $releaseDir);
 		} catch (DeployException $e) {
-			$this->output->writeln('<error>After receive hooks failed. Deploy aborted.<error>');
+			$reason = 'After receive hooks failed. Deploy aborted.';
+			$this->releaseFail($release, $reason);
+			$this->output->writeln(sprintf('<error>%s<error>', $reason));
 			return;
 		}
 
@@ -96,24 +101,67 @@ class DeployManager extends \BaseManager
 			$this->output->writeln('<info>Running before deploy hooks</info>');
 			$this->runHooks($commands['beforeDeployHooks'], $liveReleaseDir);
 		} catch (DeployException $e) {
-			$this->output->writeln('<error>Before deploy hooks failed. Deploy aborted.</error>');
+			$reason = 'Before deploy hooks failed. Deploy aborted.';
+			$this->releaseFail($release, $reason);
+			$this->output->writeln(sprintf('<error>%s</error>', $reason));
 			return;
 		}
 
 		//symlink shared folders
-		$this->linkSharedDirs($liveReleaseDir, $rootDir, $commands['sharedFolders']);
-		$this->switchLiveDeploy($liveReleaseDir, $rootDir);
-		
+		$warnings = [];
+		$sharedDirsLinked = $this->linkSharedDirs($liveReleaseDir, $rootDir, $commands['sharedFolders']);
+		if (!$sharedDirsLinked) {
+			$reason = 'Symlinking shared folders failed.';
+			$warnings[] = $reason;
+		}
+		$liveDeploySwitched = $this->switchLiveDeploy($liveReleaseDir, $rootDir);
+		if (!$liveDeploySwitched) {
+			$reason = 'Symlinking live deploy folder failed.';
+			$warnings[] = $reason;
+		}
+
 		//run after deploy hooks
 		try {
 			$this->output->writeln('<info>Running after deploy hooks</info>');
 			$this->runHooks($commands['afterDeployHooks'], $liveReleaseDir);
 		} catch (DeployException $e) {
-			$this->output->writeln('<error>After deploy hooks failed</error>');
+			$reason = 'After deploy hooks failed';
+			$warnings[] = $reason;
+			$this->output->writeln(sprintf('<error>%s</error>', $reason));
 			return;
 		}
-		
-		$this->output->writeln('<info>Application deployed!</info>');
+
+		if (!empty($warnings)) {
+			$this->releaseWarning($release, $warnings);
+			$this->output->writeln(sprintf('<comment>Application not fully deployed. There were errors: %s</comment>', implode(' ', $warnings)));
+		} else {
+			$this->releaseSuccess($release);
+			$this->output->writeln('<info>Application deployed!</info>');
+		}
+	}
+
+
+	private function releaseSuccess(\Release $releaase)
+	{
+		$releaase->success();
+		$this->dm->persist($releaase);
+		$this->dm->flush();
+	}
+
+
+	private function releaseFail(\Release $release, $reason)
+	{
+		$release->fail($reason);
+		$this->dm->persist($release);
+		$this->dm->flush();
+	}
+
+
+	private function releaseWarning(\Release $releaase, array $reasons)
+	{
+		$releaase->warn($reasons);
+		$this->dm->persist($releaase);
+		$this->dm->flush();
 	}
 
 
@@ -141,7 +189,7 @@ class DeployManager extends \BaseManager
 
 	private function prepareDeployFiles(\Application $application, $branch, $revision, $release)
 	{
-		$releaseDir = $this->releasesDir . '/' . $release;
+		$releaseDir = $this->releasesDir . '/' . $release->getNumber();
 		$repository = $this->repostioriesDir . '/' . $application->getRepoName();
 		$this->fs->mkdir($releaseDir);
 
@@ -225,13 +273,14 @@ class DeployManager extends \BaseManager
 	private function linkSharedDirs($liveReleaseDir, $rootDir, $sharedDirs = [])
 	{
 		chdir($liveReleaseDir);
+		$success = TRUE;
 		foreach ($sharedDirs as $dirName) {
 			$originDir = $rootDir . '/shared/' . $dirName;
-			
-			if(!$this->fs->exists($originDir)) {
+
+			if (!$this->fs->exists($originDir)) {
 				$this->fs->mkdir($originDir, 0755);
 			}
-			
+
 			if ($this->fs->exists($dirName)) {
 				exec(sprintf('rm -rf %s', escapeshellarg($dirName)));
 			}
@@ -247,17 +296,21 @@ class DeployManager extends \BaseManager
 					exec($command, $output, $returnVar);
 					if ($returnVar !== 0) {
 						$this->output->writeln(sprintf('<error>Cannot create symbolik link on windows. You need administrative privileges.</error>', $e->getMessage()));
+						$success = FALSE;
 					}
 					continue;
 				}
+				$success = FALSE;
 				$this->output->writeln(sprintf('<error>%s</error>', $e->getMessage()));
 			}
 		}
+		return $success;
 	}
 
 
 	private function switchLiveDeploy($liveReleaseDir, $rootDir)
 	{
+		$success = TRUE;
 		try {
 			chdir($rootDir);
 			$this->fs->symlink($liveReleaseDir, 'live', TRUE);
@@ -273,14 +326,10 @@ class DeployManager extends \BaseManager
 					$this->output->writeln(sprintf('<error>Cannot create symbolik link on windows. You need administrative privileges.</error>', $e->getMessage()));
 				}
 			}
+			$success = FALSE;
 			$this->output->writeln(sprintf('<error>%s</error>', $e->getMessage()));
 		}
-	}
-
-
-	private function windowsSymLink()
-	{
-		
+		return $success;
 	}
 
 

@@ -26,6 +26,8 @@ class ApplicationPresenter extends SecuredPresenter
 	/** @var \Application */
 	private $application;
 
+	/** @persistent */
+	public $id;
 
 	public function __construct(ApplicationManager $applicationManager, GitManager $gitManager, DeployManager $deployManager)
 	{
@@ -39,12 +41,14 @@ class ApplicationPresenter extends SecuredPresenter
 	{
 		parent::startup();
 		$this->repositoriesPath = $this->context->parameters['git']['repositories']['path'];
+		$id = $this->getParameter('id');
+		$this->application = $this->applicationManager->loadApplication($id);
 	}
 
 
-	public function actionDefault($id)
+	public function actionSettings($id)
 	{
-		$this->application = $this->applicationManager->loadApplication($id);
+		
 		$branchValues = ['master' => 'master'];
 		try {
 			$branches = $this->gitManager->loadBranches($this->application);
@@ -58,10 +62,8 @@ class ApplicationPresenter extends SecuredPresenter
 	}
 
 
-	public function renderDefault()
+	public function renderSettings()
 	{
-		$this->template->application = $this->application;
-
 		$this['formSettings']->setDefaults($this->application->getSettings());
 	}
 
@@ -69,14 +71,14 @@ class ApplicationPresenter extends SecuredPresenter
 	protected function beforeRender()
 	{
 		parent::beforeRender();
-
+		$this->template->application = $this->application;
 		$this->template->registerHelper('repoPath', callback($this, 'formatRepositoryName'));
 	}
 
 
 	public function formatRepositoryName(\Application $application)
 	{
-		return $_SERVER['SERVER_NAME'] . ':' . realpath($this->repositoriesPath . '/' . $application->getName());
+		return $_SERVER['SERVER_NAME'] . ':' . realpath($this->repositoriesPath . '/' . $application->getRepoName());
 	}
 
 

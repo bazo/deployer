@@ -5,3 +5,8 @@
   margin-right: 2%;
   float: left;
 }
+/* line 7, D:\www\commander\www\less\app.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/D\:\www\commander\www\less\app\.less}line{font-family:\000037}}
+#new-app-button {
+  margin-right: 20px;
+}
