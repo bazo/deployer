@@ -45,8 +45,15 @@ class ApplicationPresenter extends SecuredPresenter
 		$this->application = $this->applicationManager->loadApplication($id);
 	}
 
+	
+	public function renderHistory()
+	{
+		$releaseHistory = $this->applicationManager->getReleaseHistory($this->application);
+		
+		$this->template->releaseHistory = $releaseHistory;
+	}
 
-	public function actionSettings($id)
+	public function actionSettings()
 	{
 		
 		$branchValues = ['master' => 'master'];

@@ -69,6 +69,14 @@ class ApplicationManager extends \BaseManager
 		$this->dm->persist($application);
 		$this->dm->flush();
 	}
+	
+	public function getReleaseHistory(\Application $application)
+	{
+		$qb = $this->dm->getRepository('Release')->createQueryBuilder();
+		$qb->field('application.id')->equals($application->getId())
+			->sort('date', 'desc');
+		return $qb->getQuery()->execute();
+	}
 
 
 }

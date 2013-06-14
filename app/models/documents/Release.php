@@ -10,10 +10,12 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
  */
 class Release
 {
+
 	const SUCCESS = 'success';
 	const FAIL = 'fail';
 	const WARNING = 'warning';
-	
+
+
 	/**
 	 * @var string
 	 * @ODM\Id
@@ -22,55 +24,59 @@ class Release
 
 	/**
 	 * @ODM\Date
+	 * @ODM\Index(order="desc")
 	 * @var \DateTime
 	 */
 	private $date;
-	
+
 	/**
-	 * @ODM\Int
-	 * @var int
+	 * @ODM\String
+	 * @ODM\Index(order="desc")
+	 * @var string
 	 */
 	private $number;
-	
+
 	/**
 	 * @ODM\ReferenceOne(targetDocument="Application")
 	 * @var \Application
 	 */
 	private $application;
-	
+
 	/**
 	 * @ODM\String
 	 * @var string
 	 */
 	private $status;
-	
+
 	/**
 	 * @ODM\String
 	 * @var string
 	 */
 	private $branch;
-	
+
 	/**
 	 * @ODM\String
 	 * @var string
 	 */
 	private $commit;
-	
+
 	/**
 	 * @ODM\String
 	 * @var string
 	 */
 	private $message;
-	
+
+
 	public function __construct(\Application $application, $branch)
 	{
 		$this->application = $application;
 		$this->branch = $branch;
-		
+
 		$this->date = new \DateTime;
 		$this->number = $this->date->format('YmdHis');
 	}
-	
+
+
 	public function getId()
 	{
 		return $this->id;
@@ -113,9 +119,9 @@ class Release
 	}
 
 
-	public function getFailReason()
+	public function getMessage()
 	{
-		return $this->failReason;
+		return $this->message;
 	}
 
 
@@ -125,19 +131,21 @@ class Release
 		return $this;
 	}
 
+
 	public function success()
 	{
 		$this->status = self::SUCCESS;
 		return $this;
 	}
-	
-	
+
+
 	public function warn($messages = [])
 	{
 		$this->status = self::WARNING;
 		$this->message = implode(' ', $messages);
 		return $this;
 	}
+
 
 	public function fail($message)
 	{
@@ -146,14 +154,13 @@ class Release
 		return $this;
 	}
 
+
 	public function __toString()
 	{
-		return (string)$this->number;
+		return (string) $this->number;
 	}
-	
-	
-
-
 
 
 }
+
+
