@@ -9,15 +9,23 @@
 					<th>Branch</th>
 					<th>Status</th>
 					<th>Messages</th>
+					<th></th>
 				</tr>
-				
-				<tr n:foreach="$releaseHistory as $release">
-					<td>{$release->getDate()|date:'d.m.Y H:i:s'}</td>
-					<td>{$release->getNumber()}</td>
-					<td><span class="label label-info">{$release->getBranch()}</span></td>
-					<td>{include #status status => $release->getStatus()}</td>
-					<td>{$release->getMessage()}</td>
-				</tr>
+				{foreach $releaseHistory as $release}
+					{var $deployedRelease = $application->getCurrentRelease()->getId() === $release->getId() ? success}
+
+					<tr n:class="$deployedRelease ? success : ($release->hasFailed() ? error : ($release->hasWarnings() ? warning))">
+						<td>{$release->getDate()|date:'d.m.Y H:i:s'}</td>
+						<td>{$release->getNumber()}</td>
+						<td><span class="label label-info">{$release->getBranch()}</span></td>
+						<td>{include #status status => $release->getStatus()}</td>
+						<td>{$release->getMessage()}</td>
+						<td>
+							<a n:if="!$deployedRelease" href="" class="btn btn-danger">Re-deploy</a>
+							<span n:if="$deployedRelease">Deployed</span>
+						</td>
+					</tr>
+				{/}
 			</table>
 		</div>
 	</div>

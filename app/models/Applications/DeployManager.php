@@ -65,14 +65,14 @@ class DeployManager extends \BaseManager
 
 	public function deploy(\Application $application, $branch, $revision)
 	{
+		ob_implicit_flush(FALSE);
+		ob_start();
 		$applicationSettings = $application->getSettings();
 		if ($applicationSettings['auto_deploy'] !== TRUE or $applicationSettings['auto_deploy_branch'] !== $branch) {
 			return;
 		}
 
 		$release = new \Release($application, $branch, $revision);
-		$application->setCurrentRelease($release);
-		$this->dm->persist($application);
 		
 		$this->output->writeln(sprintf('Deploying branch <info>%s</info> release <info>%s</info>', $branch, $release->getNumber()));
 
@@ -135,6 +135,9 @@ class DeployManager extends \BaseManager
 			return;
 		}
 
+		$application->setCurrentRelease($release);
+		$this->dm->persist($application);
+		
 		if (!empty($warnings)) {
 			$this->releaseWarning($release, $warnings);
 			$this->output->writeln(sprintf('<comment>Application not fully deployed. There were errors: %s</comment>', implode(' ', $warnings)));
@@ -148,26 +151,31 @@ class DeployManager extends \BaseManager
 	private function releaseSuccess(\Release $release)
 	{
 		$release->success();
-		$this->dm->persist($release);
-		$this->dm->flush();
+		$this->finishRelease($release);
 	}
 
 
 	private function releaseFail(\Release $release, $reason)
 	{
 		$release->fail($reason);
+		$this->finishRelease($release);
+	}
+
+
+	private function releaseWarning(\Release $release, array $reasons)
+	{
+		$release->warn($reasons);
+		$this->finishRelease($release);
+	}
+
+	private function finishRelease(\Release $release)
+	{
+		$output = ob_get_contents();
+		ob_end_clean();
+		$release->setDeployOutput($output);
 		$this->dm->persist($release);
 		$this->dm->flush();
 	}
-
-
-	private function releaseWarning(\Release $releaase, array $reasons)
-	{
-		$releaase->warn($reasons);
-		$this->dm->persist($releaase);
-		$this->dm->flush();
-	}
-
 
 	private function runHooks($commands, $dir)
 	{

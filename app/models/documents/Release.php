@@ -60,14 +60,18 @@ class Release
 	 * @var string
 	 */
 	private $commit;
-	
+
 	/**
 	 * @ODM\String
 	 * @var string
 	 */
 	private $message;
 
-
+	/**
+	 * @param \Application $application
+	 * @param string $branch
+	 * @param string $commit
+	 */
 	public function __construct(\Application $application, $branch, $commit)
 	{
 		$this->application = $application;
@@ -160,6 +164,18 @@ class Release
 	public function __toString()
 	{
 		return (string) $this->number;
+	}
+
+
+	public function hasFailed()
+	{
+		return $this->status === self::FAIL;
+	}
+
+
+	public function hasWarnings()
+	{
+		return $this->status === self::WARNING;
 	}
 
 

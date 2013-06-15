@@ -96,9 +96,10 @@ class Application
 		$this->currentRelease = $currentRelease;
 		return $this;
 	}
-
-
-
-
+	
+	public function getCurrentRelease()
+	{
+		return $this->currentRelease;
+	}
 
 }

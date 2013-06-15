@@ -9,17 +9,9 @@
 
 <div class="row">
 	<div class="span12">
-		<div class="pull-right">
-			<a n:href="createDeployFolders!" class="btn btn-primary">Create deploy folders</a>
-			<a n:href="createRepository!" class="btn btn-inverse">Create local repository</a>
-			<a n:href="updateHooks!" class="btn btn-success">Update hooks</a>
-		</div>
-	</div>
-</div>
-	
-<div class="row">
-	<div class="span12">
-		Current branch: master Deployed commit: supermegamen
+		Current release: <span class="label label-success">{$application->getCurrentRelease()->getNumber()}</span>
+		branch: <span class="label label-info">{$application->getCurrentRelease()->getBranch()}</span>
+		commit: <span class="label label-inverse">{$application->getCurrentRelease()->getCommit()}</span>
 	</div>
 </div>
 	
