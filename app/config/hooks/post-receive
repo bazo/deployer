@@ -11,4 +11,3 @@ cd ../..
 COMMAND="php cli hooks:post-receive $REPOSITORY $OLDREV $NEWREV $REF"
 
 exec $COMMAND
-

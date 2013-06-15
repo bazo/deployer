@@ -95,22 +95,25 @@ class GitManager implements EventSubscriberInterface
 	public function loadCommits(\Application $application, $branch = 'master')
 	{
 		$path = $this->formatRepositoryPath($application);
-		$repository = $this->git->workingCopy($path);
 		
-		//goto is used because there can be an error while executing log command, git gc should fix it
-		log:
+		$returnVar = NULL;
+		$output = [];
+		$retries = 0;
+		while($returnVar !== 0) {
 			//we run the command explicitely due to windows bug, % gets escaped to space
-			$output = [];
-			$returnVar = NULL;
 			$format = '--pretty=format:"hash=%H&author_name=%an&author_email=%ae&time_relative=%ar&timestamp=%at&message=%s"';
 			$command = sprintf('git log %s %s', $format, $branch);
 			chdir($path);
 			exec($command, $output, $returnVar);
 			if($returnVar !== 0) {
 				exec('git gc'); //maybe some loose objects
-				goto log;
 			}
-		return LogParser::parseLines($output);
+			$retries++;
+			if($retries > 5) {
+				break;
+			}
+		}
+		return !empty($output) ? LogParser::parseLines($output) : [];
 	}
 
 	private function formatRepositoryPath(\Application $application)
