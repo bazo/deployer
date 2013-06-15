@@ -1,27 +1,27 @@
 {#tab}
 <div class="tab-content">
 	<div class="row">
-		<div class="span12">
+		<div class="span12" id="releases">
 			<table class="table table-striped table-hover">
 				<tr>
 					<th>Date</th>
 					<th>Release</th>
 					<th>Branch</th>
 					<th>Status</th>
-					<th>Messages</th>
+					<th>Commit message</th>
 					<th></th>
 				</tr>
 				{foreach $releaseHistory as $release}
 					{var $deployedRelease = $application->getCurrentRelease()->getId() === $release->getId() ? success}
 
-					<tr n:class="$deployedRelease ? success : ($release->hasFailed() ? error : ($release->hasWarnings() ? warning))">
-						<td>{$release->getDate()|date:'d.m.Y H:i:s'}</td>
-						<td>{$release->getNumber()}</td>
-						<td><span class="label label-info">{$release->getBranch()}</span></td>
-						<td>{include #status status => $release->getStatus()}</td>
-						<td>{$release->getMessage()}</td>
-						<td>
-							<a n:if="!$deployedRelease" href="" class="btn btn-danger">Re-deploy</a>
+					<tr n:class="$deployedRelease ? success : ($release->hasFailed() ? error : ($release->hasWarnings() ? warning)), release">
+						<td class="date">{$release->getDate()|date:'d.m.Y H:i:s'}</td>
+						<td class="number">{$release->getNumber()}</td>
+						<td class="branch"><span class="label label-info">{$release->getBranch()}</span></td>
+						<td class="status">{include #status status => $release->getStatus()}</td>
+						<td class="commit-message">{$release->getCommitMessage()}</td>
+						<td class="actions">
+							<a n:if="!$deployedRelease" href="" class="btn btn-danger"><i class="icon icon-refresh"></i> Re-deploy</a>
 							<span n:if="$deployedRelease">Deployed</span>
 						</td>
 					</tr>

@@ -109,7 +109,7 @@ class GitManager implements EventSubscriberInterface
 				exec('git gc'); //maybe some loose objects
 			}
 			$retries++;
-			if($retries > 5) {
+			if($retries > 5 or empty($output)) {
 				break;
 			}
 		}

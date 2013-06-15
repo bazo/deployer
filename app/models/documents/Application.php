@@ -51,6 +51,7 @@ class Application
 	{
 		$this->name = $name;
 		$this->repoName = Strings::webalize($name);
+		$this->settings = [];
 	}
 
 	public function getId()
@@ -74,6 +75,11 @@ class Application
 		return $this->settings;
 	}
 
+	public function getSetting($setting)
+	{
+		$settings = $this->getSettings();
+		return isset($settings[$setting]) ? $settings[$setting] : NULL;
+	}
 
 	/**
 	 * @param array $settings

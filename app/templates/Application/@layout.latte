@@ -9,9 +9,12 @@
 
 <div class="row">
 	<div class="span12">
-		Current release: <span class="label label-success">{$application->getCurrentRelease()->getNumber()}</span>
-		branch: <span class="label label-info">{$application->getCurrentRelease()->getBranch()}</span>
-		commit: <span class="label label-inverse">{$application->getCurrentRelease()->getCommit()}</span>
+		<div class="well" n:if="$application->getCurrentRelease()">
+			Current release: <span class="label label-success">{$application->getCurrentRelease()->getNumber()}</span>
+			branch: <span class="label label-info">{$application->getCurrentRelease()->getBranch()}</span>
+			commit id: <span class="label label-inverse">{$application->getCurrentRelease()->getCommit()|substr:0:7}</span>
+			commit message: <span class="label">{$application->getCurrentRelease()->getCommitMessage()}</span>
+		</div>
 	</div>
 </div>
 	
@@ -19,9 +22,15 @@
 <div class="row">
 	<div class="span12">
 		<ul class="nav nav-tabs">
-			<li n:class="$presenter->isLinkCurrent('releases') ? active"><a n:href="releases">Releases</a></li>
-			<li n:class="$presenter->isLinkCurrent('commits') ? active"><a n:href="commits">Commits</a></li>
-			<li n:class="$presenter->isLinkCurrent('settings') ? active, pull-right" ><a n:href="settings">Settings</a></li>
+			<li n:class="$presenter->isLinkCurrent('releases') ? active">
+				<a n:href="releases"><i class="icon icon-cloud-upload"></i> Releases</a>
+			</li>
+			<li n:class="$presenter->isLinkCurrent('commits') ? active">
+				<a n:href="commits"><i class="icon icon-code"></i> Commits</a>
+			</li>
+			<li n:class="$presenter->isLinkCurrent('settings') ? active, pull-right" >
+				<a n:href="settings"><i class="icon icon-cog"></i> Settings</a>
+			</li>
 		</ul>
 	</div>
 </div>

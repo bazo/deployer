@@ -74,6 +74,9 @@ class DeployManager extends \BaseManager
 
 		$release = new \Release($application, $branch, $revision);
 		
+		$commitMessage = $this->readLastCommitMessage($application, $branch);
+		$release->setCommitMessage($commitMessage);
+		
 		$this->output->writeln(sprintf('Deploying branch <info>%s</info> release <info>%s</info>', $branch, $release->getNumber()));
 
 		$releaseDir = $this->prepareDeployFiles($application, $branch, $revision, $release);
@@ -172,7 +175,7 @@ class DeployManager extends \BaseManager
 	{
 		$output = ob_get_contents();
 		ob_end_clean();
-		$release->setDeployOutput($output);
+		//$release->setDeployOutput($output);
 		$this->dm->persist($release);
 		$this->dm->flush();
 	}
@@ -197,8 +200,21 @@ class DeployManager extends \BaseManager
 			}
 		}
 	}
+	
+	private function readLastCommitMessage(\Application $application, $branch)
+	{
+		$repositoryPath = $this->repostioriesDir . '/' . $application->getRepoName();
+		$output = [];
+		$returnVar = NULL;
+		$format = '--pretty=format:"%s" -n 1';
+		$command = sprintf('git log %s %s', $format, $branch);
+		chdir($repositoryPath);
+		exec($command, $output, $returnVar);
+		
+		return current($output);
+	}
 
-
+	
 	private function prepareDeployFiles(\Application $application, $branch, $revision, $release)
 	{
 		$releaseDir = $this->releasesDir . '/' . $release->getNumber();

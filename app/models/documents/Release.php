@@ -68,6 +68,13 @@ class Release
 	private $message;
 
 	/**
+	 * @ODM\String
+	 * @var string
+	 */
+	private $commitMessage;
+
+
+	/**
 	 * @param \Application $application
 	 * @param string $branch
 	 * @param string $commit
@@ -176,6 +183,19 @@ class Release
 	public function hasWarnings()
 	{
 		return $this->status === self::WARNING;
+	}
+
+
+	public function setCommitMessage($commitMessage)
+	{
+		$this->commitMessage = $commitMessage;
+		return $this;
+	}
+
+
+	public function getCommitMessage()
+	{
+		return $this->commitMessage;
 	}
 
 

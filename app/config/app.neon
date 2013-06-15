@@ -28,6 +28,10 @@ parameters:
 	db:
 		name: commander
 
+	ui:
+		theme: default
+		responsive: false
+
 documentManager:
 	dbname: %db.name%
 	uri: mongodb://localhost/%db.name%
