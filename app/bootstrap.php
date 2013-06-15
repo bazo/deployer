@@ -41,7 +41,7 @@ $configurator->createRobotLoader()
 $configurator->addConfig(__DIR__ . '/config/app.neon', $configurator::NONE);
 
 $configurator->onCompile[] = function (\Nette\Configurator $configurator, \Nette\DI\Compiler $compiler) {
-	$compiler->addExtension('documentManager', new \Bazo\MongoDb\DI\DocumentManagerExtension());
+	$compiler->addExtension('database', new \Bazo\MongoDb\DI\DocumentManagerExtension());
 	$compiler->addExtension('odmCommands', new \Bazo\MongoDb\DI\DoctrineODMCommandsExtension());
 	$compiler->addExtension('console', new \Extensions\ConsoleExtension);
 	$compiler->addExtension('mediator', new \Extensions\MediatorExtension);

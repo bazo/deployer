@@ -32,7 +32,7 @@ parameters:
 		theme: default
 		responsive: false
 
-documentManager:
+database:
 	dbname: %db.name%
 	uri: mongodb://localhost/%db.name%
 	cachePrefix: %db.name%
