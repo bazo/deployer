@@ -5,7 +5,7 @@ namespace Applications;
 use Symfony\Component\Filesystem\Filesystem;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use Symfony\Component\Console\Output\ConsoleOutput;
+use Commander\Console\DeployConsoleOutput;
 use GitWrapper\GitWrapper;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Console\Helper\FormatterHelper;
@@ -30,13 +30,16 @@ class DeployManager extends \BaseManager
 	/** @var Filesystem */
 	private $fs;
 
-	/** @var ConsoleOutput */
+	/** @var DeployConsoleOutput */
 	private $output;
 
 	/** @var GitWrapper */
 	private $git;
 
-	public function __construct($releasesDir, $repositoriesDir, DocumentManager $dm, EventDispatcher $mediator, Filesystem $fs, ConsoleOutput $output, GitWrapper $git)
+	/** @var \Application */
+	private $application;
+	
+	public function __construct($releasesDir, $repositoriesDir, DocumentManager $dm, EventDispatcher $mediator, Filesystem $fs, DeployConsoleOutput $output, GitWrapper $git)
 	{
 		parent::__construct($dm, $mediator);
 		$this->releasesDir = $releasesDir;
@@ -63,14 +66,30 @@ class DeployManager extends \BaseManager
 	}
 
 
-	public function deploy(\Application $application, $branch, $revision)
+	public function deployManual(\Application $application, $branch, $revision)
 	{
-		ob_implicit_flush(FALSE);
-		ob_start();
+		$this->deploy($application, $branch, $revision);
+	}
+	
+	
+	public function deployAutomatic(\Application $application, $branch, $revision)
+	{
 		$applicationSettings = $application->getSettings();
 		if ($applicationSettings['auto_deploy'] !== TRUE or $applicationSettings['auto_deploy_branch'] !== $branch) {
 			return;
 		}
+		
+		$this->deploy($application, $branch, $revision);
+	}
+	
+	private function deploy(\Application $application, $branch, $revision)
+	{
+		$this->startDeploy($application);
+		
+		$originalDir = getcwd();
+		ob_implicit_flush(FALSE);
+		ob_start();
+		$applicationSettings = $application->getSettings();
 
 		$release = new \Release($application, $branch, $revision);
 		
@@ -142,42 +161,58 @@ class DeployManager extends \BaseManager
 		$this->dm->persist($application);
 		
 		if (!empty($warnings)) {
-			$this->releaseWarning($release, $warnings);
 			$this->output->writeln(sprintf('<comment>Application not fully deployed. There were errors: %s</comment>', implode(' ', $warnings)));
+			$this->releaseWarning($release, $warnings);
 		} else {
-			$this->releaseSuccess($release);
 			$this->output->writeln('<info>Application deployed!</info>');
+			$this->releaseSuccess($release);
 		}
+		
+		chdir($originalDir);
+		
+		
 	}
 
 
 	private function releaseSuccess(\Release $release)
 	{
 		$release->success();
-		$this->finishRelease($release);
+		$this->finishDeploy($release);
 	}
 
 
 	private function releaseFail(\Release $release, $reason)
 	{
 		$release->fail($reason);
-		$this->finishRelease($release);
+		$this->finishDeploy($release);
 	}
 
 
 	private function releaseWarning(\Release $release, array $reasons)
 	{
 		$release->warn($reasons);
-		$this->finishRelease($release);
+		$this->finishDeploy($release);
 	}
 
-	private function finishRelease(\Release $release)
+	private function startDeploy(\Application $application)
+	{
+		$deployStartedEvent = new \Events\Application\DeployStarted($application->getId());
+		$this->mediator->dispatch(\Events\ApplicationEvents::DEPLOY_STARTED, $deployStartedEvent);
+		
+		$this->output->setApplicationId($application->getId());
+		$this->application = $application;
+	}
+	
+	private function finishDeploy(\Release $release)
 	{
 		$output = ob_get_contents();
 		ob_end_clean();
-		//$release->setDeployOutput($output);
+		$release->setDeployOutput($this->output->getOutputBuffer());
 		$this->dm->persist($release);
 		$this->dm->flush();
+		
+		$deployFinishedEvent = new \Events\Application\DeployFinished($this->application->getId());
+		$this->mediator->dispatch(\Events\ApplicationEvents::DEPLOY_FINISHED, $deployFinishedEvent);
 	}
 
 	private function runHooks($commands, $dir)
@@ -227,7 +262,8 @@ class DeployManager extends \BaseManager
 		//checkout the desired branch
 		$output = [];
 		$returnVar = NULL;
-		exec(sprintf('git --git-dir=%s/.git --work-tree=%s checkout %s', $releaseDir, $releaseDir, escapeshellarg($branch)), $output, $returnVar);
+		//exec(sprintf('git --git-dir=%s/.git --work-tree=%s checkout %s', $releaseDir, $releaseDir, escapeshellarg($branch)), $output, $returnVar);
+		exec(sprintf('git --git-dir=%s/.git --work-tree=%s checkout %s', $releaseDir, $releaseDir, escapeshellarg($revision)), $output, $returnVar);
 		
 		//delete the .git direcotry
 		$this->fs->chmod('.git', 0777);
@@ -237,6 +273,7 @@ class DeployManager extends \BaseManager
 		if($returnVar !== 0) {
 			$this->output->writeln('Could not remove .git folder. Falling back to stupid file copy.');
 		}
+		
 		return $releaseDir;
 	}
 
@@ -316,6 +353,7 @@ class DeployManager extends \BaseManager
 		} catch (IOException $e) {
 			//ignore
 		}
+		
 		return $liveReleaseDir;
 	}
 

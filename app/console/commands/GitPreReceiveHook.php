@@ -5,6 +5,7 @@ namespace Console\Command;
 use Symfony\Component\Console;
 use Applications\DeployManager;
 use Applications\ApplicationManager;
+use Applications\DeployProgress;
 
 /**
  * Git pre recieve hook
@@ -19,14 +20,20 @@ class GitPreReceiveHook extends Console\Command\Command
 	/** @var ApplicationManager */
 	private $applicationManager;
 
+	/** @var DeployProgress */
+	private $deployProgress;
+
+
 	/**
 	 * @param DeployManager $deployManager
 	 * @param ApplicationManager $applicationManager
+	 * @param DeployProgress $deployProgress
 	 */
-	public function inject(DeployManager $deployManager, ApplicationManager $applicationManager)
+	public function inject(DeployManager $deployManager, ApplicationManager $applicationManager, DeployProgress $deployProgress)
 	{
 		$this->deployManager = $deployManager;
 		$this->applicationManager = $applicationManager;
+		$this->deployProgress = $deployProgress;
 	}
 
 
@@ -49,13 +56,17 @@ class GitPreReceiveHook extends Console\Command\Command
 		$refname = $input->getArgument('refname');
 
 		$branch = str_replace('refs/heads/', '', $refname);
-		
+
 		$application = $this->applicationManager->loadApplicationByRepoName($repository);
-		if($application === NULL) {
+		if ($application === NULL) {
 			$output->writeln(sprintf('<error>Cannot find application for repository %s</error>', $repository));
 			exit(1);
 		}
 		
+		if($this->deployProgress->isDeployRunning($application->getId())) {
+			$output->writeln(sprintf('<error>There is a deploy running for this application. Try again later.</error>', $repository));
+			exit(1);
+		}
 	}
 
 

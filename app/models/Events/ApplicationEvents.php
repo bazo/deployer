@@ -10,5 +10,7 @@ namespace Events;
 abstract class ApplicationEvents
 {
 	const APPLICATION_CREATED = 'application.created';
+	const DEPLOY_STARTED = 'application.deploy.started';
+	const DEPLOY_FINISHED = 'application.deploy.finished';
 }
 

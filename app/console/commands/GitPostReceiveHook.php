@@ -5,6 +5,7 @@ namespace Console\Command;
 use Symfony\Component\Console;
 use Applications\DeployManager;
 use Applications\ApplicationManager;
+use Nette\Caching\IStorage;
 
 /**
  * Git post receive hook
@@ -19,14 +20,19 @@ class GitPostReceiveHook extends Console\Command\Command
 	/** @var ApplicationManager */
 	private $applicationManager;
 
+	/** @var IStorage */
+	private $cacheStorage;
+	
+	
 	/**
 	 * @param DeployManager $deployManager
 	 * @param ApplicationManager $applicationManager
 	 */
-	public function inject(DeployManager $deployManager, ApplicationManager $applicationManager)
+	public function inject(DeployManager $deployManager, ApplicationManager $applicationManager, IStorage $cacheStorage)
 	{
 		$this->deployManager = $deployManager;
 		$this->applicationManager = $applicationManager;
+		$this->cacheStorage = $cacheStorage;
 	}
 
 
@@ -55,7 +61,12 @@ class GitPostReceiveHook extends Console\Command\Command
 			$output->writeln(sprintf('<error>Cannot find application for repository %s</error>', $repository));
 			return;
 		}
-		$this->deployManager->deploy($application, $branch, $newrev);
+		
+		$cache = new \Nette\Caching\Cache($this->cacheStorage, 'commits');
+		$key = 'commits-'.$application->getId().'-'.$branch;
+		$cache->remove($key);
+		
+		$this->deployManager->deployAutomatic($application, $branch, $newrev);
 	}
 
 

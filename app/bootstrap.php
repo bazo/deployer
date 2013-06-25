@@ -45,12 +45,18 @@ $configurator->onCompile[] = function (\Nette\Configurator $configurator, \Nette
 	$compiler->addExtension('odmCommands', new \Bazo\MongoDb\DI\DoctrineODMCommandsExtension());
 	$compiler->addExtension('console', new \Extensions\ConsoleExtension);
 	$compiler->addExtension('mediator', new \Extensions\MediatorExtension);
+	$compiler->addExtension('redis', new Kdyby\Redis\DI\RedisExtension);
 };
 
 $localConfig = __DIR__ . '/config/config.neon';
 if (file_exists($localConfig)) {
 	$configurator->addConfig($localConfig);
 }
+
+//workaraound for kdyby redis panel
+Nette\Diagnostics\Debugger::getBlueScreen();
+Nette\Diagnostics\Debugger::getBar();
+
 $container = $configurator->createContainer();
 
 return $container;

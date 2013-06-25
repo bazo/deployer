@@ -4,6 +4,8 @@ namespace Commander;
 
 use Commander\Application\UI\Form\Form;
 use Nette\Utils\Strings;
+use Applications\ApplicationManager;
+use Applications\DeployProgress;
 
 /**
  * Secured presenter.
@@ -11,16 +13,19 @@ use Nette\Utils\Strings;
 class SecuredPresenter extends BasePresenter
 {
 
-	/** @var \Applications\ApplicationManager */
+	/** @var ApplicationManager */
 	protected $applicationManager;
 
+	/** @var DeployProgress */
+	protected $deployProgress;
 
 	/**
-	 * @param \Applications\ApplicationManager $applicationManager
+	 * @param ApplicationManager $applicationManager
 	 */
-	public function __construct(\Applications\ApplicationManager $applicationManager)
+	public function inject(ApplicationManager $applicationManager, DeployProgress $deployProgress)
 	{
 		$this->applicationManager = $applicationManager;
+		$this->deployProgress = $deployProgress;
 	}
 
 
@@ -76,6 +81,7 @@ class SecuredPresenter extends BasePresenter
 			$hash = md5(Strings::lower(Strings::trim($email)));
 			return sprintf('http://www.gravatar.com/avatar/%s?s=%d', $hash, $size);
 		});
+		$this->template->deploys = $this->deployProgress->listDeploys();
 	}
 
 }

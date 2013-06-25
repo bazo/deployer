@@ -8,6 +8,7 @@ use Applications\DeployManager;
 use Commander\Application\UI\Form\Form;
 use Symfony\Component\Filesystem\Exception\IOException;
 use GitWrapper\GitException;
+use Nette\Caching\IStorage;
 
 /**
  * Applications presenter.
@@ -26,14 +27,17 @@ class ApplicationPresenter extends SecuredPresenter
 	/** @var \Application */
 	private $application;
 
+	/** @var IStorage */
+	private $cacheStorage;
+	
 	/** @persistent */
 	public $id;
 
-	public function __construct(ApplicationManager $applicationManager, GitManager $gitManager, DeployManager $deployManager)
+	public function __construct(GitManager $gitManager, DeployManager $deployManager, IStorage $cacheStorage)
 	{
-		parent::__construct($applicationManager);
 		$this->gitManager = $gitManager;
 		$this->deployManager = $deployManager;
+		$this->cacheStorage = $cacheStorage;
 	}
 
 
@@ -48,6 +52,12 @@ class ApplicationPresenter extends SecuredPresenter
 	}
 
 	
+	public function renderRelease($release_id)
+	{
+		$release = $this->applicationManager->getRelease($this->application, $release_id);
+		$this->template->release = $release;
+	}
+	
 	public function renderReleases()
 	{
 		$releaseHistory = $this->applicationManager->getReleaseHistory($this->application);
@@ -57,16 +67,24 @@ class ApplicationPresenter extends SecuredPresenter
 
 	public function renderCommits()
 	{
-		$branches = $this->gitManager->loadBranches($this->application);;
+		$branches = $this->gitManager->loadBranches($this->application);
 		$selectedBranch = $this->getHttpRequest()->getCookie($this->user->getId().'-branch');
 		$selectedBranch = $selectedBranch !== NULL ? $selectedBranch : $branches[0];
 		
-		$log = $this->gitManager->loadCommits($this->application, $selectedBranch);
+		$cache = new \Nette\Caching\Cache($this->cacheStorage, 'commits');
+		$key = 'commits-'.$this->application->getId().'-'.$selectedBranch;
 		
-		$commitsByDate = [];
-		foreach($log as $commit) {
-			$date = date('Y-m-d', $commit['timestamp']);
-			$commitsByDate[$date][] = $commit;
+		$commitsByDate = $cache->load($key);
+		if($commitsByDate === NULL) {
+			$log = $this->gitManager->loadCommits($this->application, $selectedBranch);
+
+			$commitsByDate = [];
+			foreach($log as $commit) {
+				$date = date('Y-m-d', $commit['timestamp']);
+				$commitsByDate[$date][] = $commit;
+			}
+			
+			$cache->save($key, $commitsByDate);
 		}
 		
 		$this->template->commitsByDate = $commitsByDate;
@@ -106,6 +124,16 @@ class ApplicationPresenter extends SecuredPresenter
 		parent::beforeRender();
 		$this->template->application = $this->application;
 		$this->template->registerHelper('repoPath', callback($this, 'formatRepositoryName'));
+		$this->template->registerHelper('deployData', function(\Application $application, $branch, $commit){
+			$data = [
+				'applicationId' => $application->getId(),
+				'branch' => $branch,
+				'commit' => $commit,
+				'userId' => $this->getUser()->getId()
+			];
+			
+			return json_encode($data);
+		});
 	}
 
 

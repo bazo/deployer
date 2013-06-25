@@ -5,7 +5,7 @@
 # http://nette.org/security-warning
 #
 php:
-	date.timezone: Europe/Prague
+	date.timezone: Europe/Bratislava
 	# zlib.output_compression: yes
 
 nette:
@@ -32,17 +32,32 @@ parameters:
 		theme: default
 		responsive: false
 
+	wamp:
+		host:
+		port: 8080
+
 database:
 	dbname: %db.name%
 	uri: mongodb://localhost/%db.name%
 	cachePrefix: %db.name%
 	metaDataCacheClass: \Doctrine\Common\Cache\ArrayCache
 
+redis:
+	storage: on
+	journal: on
+	database: 0
+	session: {database: 1}
+	debugger: off
+
 services:
 
 	#utilities
 	- GitWrapper\GitWrapper(%git.binary%)
 	- Symfony\Component\Filesystem\Filesystem
+	deployConsoleOutput:
+		class: Commander\Console\DeployConsoleOutput(..., Symfony\Component\Console\Output\OutputInterface::VERBOSITY_DEBUG)
+		autowired: false
+
 	- Symfony\Component\Console\Output\ConsoleOutput(Symfony\Component\Console\Output\OutputInterface::VERBOSITY_DEBUG)
 
 	#routing
@@ -54,11 +69,22 @@ services:
 
 	#applications
 	- Applications\ApplicationManager
-	- Applications\DeployManager(%releasesDir%, %git.repositories.path%)
+	- Applications\DeployManager(%releasesDir%, %git.repositories.path%, ..., ..., ..., @deployConsoleOutput, ...)
+	deployProgress:
+		class: Applications\DeployProgress
+		tags: ['subscriber']
 
 	#git
 	gitManager:
 		class: Git\GitManager(%git.repositories.path%, %appDir%/config/hooks)
 		tags: [subscriber]
 
-factories:
+	#wamp
+	wsServer: WAMP\Server
+	client: \WAMP\WAMPClient('http://localhost:8080')
+	queueManager: Queue\QueueManager
+
+	deployWorker: DeployWorker
+	messagePublisher: 
+		class: MessagePublisher
+		tags: ['subscriber']

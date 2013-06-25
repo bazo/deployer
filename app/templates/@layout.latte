@@ -24,6 +24,7 @@
 
 		<!-- Fav and touch icons -->
 		{#head}{/#}
+		
 	</head>
 
 	<body>
@@ -63,13 +64,15 @@
 						<a href="#addApllicationForm" role="button" class="btn btn-success pull-right" id="new-app-button" data-toggle="modal">
 							<i class="icon icon-plus icon-white"></i> Add aplication
 						</a>
+						<a n:if="$user->isLoggedIn()" class="btn btn-info pull-right" id="deploy-toggle" data-toggle="modal" href="#deploys">
+							Running deploys: <span id="deploys-count" class="badge badge-info">{count($deploys)}</span>
+						</a>
 					</div>
 				</div>
 			</div>
 		</div>
 
 		<div class="container">
-
 			{snippet flashes}
 				{foreach $flashes as $flash}
 					<div class="alert alert-{$flash->type} span12">
@@ -85,20 +88,43 @@
 			{/}
 
 			{include #content}	
+		</div>
 
-	</div> <!-- /container -->
+		<div n:if="$user->isLoggedIn()" id="deploys" class="modal hide fade">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h3>Running deploys</h3>
+			</div>
+			<div class="modal-body">
+				
+				<div class="accordion" id="deploys-accordion">
+					<div class="accordion-group" n:foreach="$deploys as $applicationId => $messages" id="accordion-{$applicationId}">
+						<div class="accordion-heading">
+							<a class="accordion-toggle" data-toggle="collapse" data-parent="#deploys-accordion" href="#collapse-{$applicationId}">
+								<i class="icon icon-plus"></i> {$applicationId}
+							</a>
+						</div>
+						<div id="collapse-{$applicationId}" class="accordion-body collapse">
+							<div class="accordion-inner well" id="output-{$applicationId}">
+								{foreach $messages as $message}
+									{!$message|nl2br}
+								{/}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<a href="#" data-dismiss="modal" class="btn btn-primary">Close</a>
+			</div>
+		</div>
+		
+		<script>
+			var userId = {$user->getId()};
 
-	<!-- Le javascript
-	================================================== -->
-	<!-- Placed at the end of the document so the pages load faster -->
-
-
-		<script src="{$basePath}/vendor/jquery/jquery.min.js"></script>
-		<script src="{$basePath}/js/bootstrap.min.js"></script>
-		<script src="{$basePath}/js/netteForms.js"></script>
-		<script src="{$basePath}/js/moment.min.js"></script>
-		<script src="{$basePath}/js/livestamp.min.js"></script>
-		<script src="{$basePath}/js/main.js"></script>
+		</script>
+		<script src="http://autobahn.s3.amazonaws.com/js/autobahn.min.js"></script>
+		<script data-main="/js/main" src="{$basePath}/vendor/requirejs/require.js"></script>
 		{#scripts}
 		{/#}
 

@@ -1,0 +1,53 @@
+{#tab}
+<div class="tab-content">
+	<div class="row">
+		<div class="span12" id="release">
+			{include #backlink}
+			{var $deployedRelease = $application->getCurrentRelease()->getId() === $release->getId() ? success}
+			<h2>Release: {$release->getNumber()}</h2>
+			
+			<table class="table">
+				<tr>
+					<th>Date</th>
+					<th>Release</th>
+					<th>Branch</th>
+					<th>Status</th>
+					<th>Commit message</th>
+					<th></th>
+				</tr>
+
+					<tr n:class="$deployedRelease ? success : ($release->hasFailed() ? error : ($release->hasWarnings() ? warning)), release">
+						<td class="date">{$release->getDate()|date:'d.m.Y H:i:s'}</td>
+						<td class="number">{$release->getNumber()}</td>
+						<td class="branch"><span class="label label-info">{$release->getBranch()}</span></td>
+						<td class="status">{include #status status => $release->getStatus()}</td>
+						<td class="commit-message">{$release->getCommitMessage()}</td>
+						<td class="actions">
+							<a n:if="!$deployedRelease" href="#" data-deploy="{$application|deployData:$release->getBranch():$release->getCommit()}" class="btn btn-danger btn-deploy"><i class="icon icon-refresh"></i> Re-deploy</a>
+							<span n:if="$deployedRelease">Deployed</span>
+						</td>
+					</tr>
+			</table>
+							
+			<div id="deploy-output" class="well">
+				<h3>Deploy output:</h3>
+				{!$release->getDeployOutput()|nl2br}
+			</div>
+			
+			{include #backlink}
+		</div>
+	</div>
+</div>
+				
+
+{define #status}
+	{var $class = $status}
+	{if $status === \Release::FAIL}
+		{var $class = 'important'}
+	{/}
+	<span class="label label-{$class}">{$status}</span>
+{/}
+
+{define #backlink}
+	<a n:href="releases id => $application->getId()"><< back</a>
+{/}

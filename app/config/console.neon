@@ -14,6 +14,10 @@ services:
 		setup:
 			- setUserManager(...)
 
+	clearQueue:
+		class: Console\Command\ClearQueue
+		tags: [consoleCommand]
+
 	#hooks
 	postReceive:
 		class: Console\Command\GitPostReceiveHook

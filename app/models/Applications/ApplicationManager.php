@@ -77,6 +77,17 @@ class ApplicationManager extends \BaseManager
 			->sort('date', 'desc');
 		return $qb->getQuery()->execute();
 	}
+	
+	public function getRelease(\Application $application, $releaseId)
+	{
+		return $this->dm->getRepository('Release')->findOneBy(['id' => $releaseId]);
+		
+		$qb = $this->dm->getRepository('Release')->createQueryBuilder();
+		$qb->field('application.id')->equals($application->getId())
+			->field('id')->equals($releaseId);
+			
+		return $qb->getQuery()->execute()->getNext();
+	}
 
 
 }

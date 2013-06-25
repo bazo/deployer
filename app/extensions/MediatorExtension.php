@@ -16,9 +16,16 @@ class MediatorExtension extends \Nette\DI\CompilerExtension
 	{
 		$containerBuilder = $this->getContainerBuilder();
 
-		$containerBuilder->addDefinition($this->prefix('eventDispatcher'))
+		$containerBuilder
+				->addDefinition($this->prefix('eventDispatcher'))
 				->addTag('mediator')
 				->setClass('Symfony\Component\EventDispatcher\EventDispatcher');
+
+		$containerBuilder
+				->addDefinition('mediator')
+				->setClass('Symfony\Component\EventDispatcher\EventDispatcher')
+				->setFactory('@container::getService', array($this->prefix('eventDispatcher')))
+				->setAutowired(FALSE);
 	}
 
 
@@ -38,6 +45,7 @@ class MediatorExtension extends \Nette\DI\CompilerExtension
 			}
 		}
 	}
+
 
 }
 

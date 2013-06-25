@@ -13,6 +13,10 @@ define('LIBS_DIR', __DIR__ . '/libs');
 // Let bootstrap create Dependency Injection container.
 $container = require APP_DIR . '/bootstrap.php';
 
+//workaraound for kdyby redis panel
+Nette\Diagnostics\Debugger::getBlueScreen();
+Nette\Diagnostics\Debugger::getBar();
+
 // Run console
 if (PHP_SAPI === 'cli') {
 	$container->console->run();

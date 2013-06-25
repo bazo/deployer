@@ -16,12 +16,12 @@
 
 					<tr n:class="$deployedRelease ? success : ($release->hasFailed() ? error : ($release->hasWarnings() ? warning)), release">
 						<td class="date">{$release->getDate()|date:'d.m.Y H:i:s'}</td>
-						<td class="number">{$release->getNumber()}</td>
+						<td class="number"><a n:href="release release_id => $release->getId()">{$release->getNumber()}</a></td>
 						<td class="branch"><span class="label label-info">{$release->getBranch()}</span></td>
 						<td class="status">{include #status status => $release->getStatus()}</td>
 						<td class="commit-message">{$release->getCommitMessage()}</td>
 						<td class="actions">
-							<a n:if="!$deployedRelease" href="" class="btn btn-danger"><i class="icon icon-refresh"></i> Re-deploy</a>
+							<a n:if="!$deployedRelease" href="#" data-deploy="{$application|deployData:$release->getBranch():$release->getCommit()}" class="btn btn-danger btn-deploy"><i class="icon icon-refresh"></i> Re-deploy</a>
 							<span n:if="$deployedRelease">Deployed</span>
 						</td>
 					</tr>

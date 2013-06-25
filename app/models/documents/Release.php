@@ -73,6 +73,11 @@ class Release
 	 */
 	private $commitMessage;
 
+	/**
+	 * @ODM\String
+	 * @var string
+	 */
+	private $deployOutput;
 
 	/**
 	 * @param \Application $application
@@ -196,6 +201,18 @@ class Release
 	public function getCommitMessage()
 	{
 		return $this->commitMessage;
+	}
+
+	public function getDeployOutput()
+	{
+		return $this->deployOutput;
+	}
+
+
+	public function setDeployOutput($deployOutput)
+	{
+		$this->deployOutput = $deployOutput;
+		return $this;
 	}
 
 
