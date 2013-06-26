@@ -287,7 +287,7 @@ class DeployManager extends \BaseManager
 		$beforeDeployHooks = [];
 		$afterDeployHooks = [];
 
-		$commandFile = $releaseDir . '/commander.neon';
+		$commandFile = $releaseDir . '/deploy.neon';
 		if (!file_exists($commandFile)) {
 			$this->output->writeln('No command file found');
 		} else {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Commander;
+namespace Deployer;
 
 use Commander\Application\UI\Form\Form;
 

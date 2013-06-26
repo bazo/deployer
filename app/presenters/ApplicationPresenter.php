@@ -1,6 +1,6 @@
 <?php
 
-namespace Commander;
+namespace Deployer;
 
 use Applications\ApplicationManager;
 use Git\GitManager;

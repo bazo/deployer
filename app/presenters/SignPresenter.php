@@ -1,6 +1,6 @@
 <?php
 
-namespace Commander;
+namespace Deployer;
 
 use Nette;
 use Commander\Application\UI\Form\Form;

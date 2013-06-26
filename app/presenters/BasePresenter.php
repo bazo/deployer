@@ -1,6 +1,6 @@
 <?php
 
-namespace Commander;
+namespace Deployer;
 
 use Nette;
 use Nette\ArrayHash;

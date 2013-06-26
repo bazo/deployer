@@ -3,7 +3,7 @@ parameters:
 		binary: #leave empty for autodetection
 
 	db:
-		name: commander
+		name: deployer
 
 	git:
 		binary: 

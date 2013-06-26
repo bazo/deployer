@@ -12,7 +12,7 @@ nette:
 	application:
 		errorPresenter: Error
 		mapping:
-			*: Commander\*Module\*Presenter
+			*: Deployer\*Module\*Presenter
 
 	session:
 		expiration: 14 days
@@ -26,7 +26,7 @@ parameters:
 	releasesDir: %appDir%/../releases
 
 	db:
-		name: commander
+		name: deployer
 
 	ui:
 		theme: default
@@ -40,7 +40,7 @@ database:
 	dbname: %db.name%
 	uri: mongodb://localhost/%db.name%
 	cachePrefix: %db.name%
-	metaDataCacheClass: \Doctrine\Common\Cache\ArrayCache
+	metaDataCache: @metaDataCache
 
 redis:
 	storage: on
@@ -50,6 +50,9 @@ redis:
 	debugger: off
 
 services:
+
+	#cache
+	metaDataCache: Doctrine\Common\Cache\FilesystemCache(%tempDir%/metadatacache)
 
 	#utilities
 	- GitWrapper\GitWrapper(%git.binary%)
