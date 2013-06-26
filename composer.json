@@ -1,7 +1,7 @@
 {
-	"name": "bazo/deployer",
+	"name": "bazo/app-deployer",
 	"description": "A paas style deployment application",
-	"keywords": ["Deploy", "Git"],
+	"keywords": ["Deploy", "Git", "Applications", "PHP"],
 	"type": "project",
 	"homepage": "https://github.com/bazo/deployer",
 	"authors": [
