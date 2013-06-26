@@ -3,7 +3,7 @@ Deployer
 
 ## What is it
 
-Commander is a paas style deployment application(like pagodabox or appfog). It is intended for deployment of web applications on private vps servers
+Deployer is a paas style deployment application(like pagodabox or appfog). It is intended for deployment of web applications on private vps servers
 
 ## Features
 

@@ -1,6 +1,20 @@
 {
-	"name": "bazo/sandbox",
-	"description": "Nette Framework sandbox with bootstrap and symfony console.",
+	"name": "bazo/deployer",
+	"description": "A paas style deployment application",
+	"keywords": ["Deploy", "Git"],
+	"type": "project",
+	"homepage": "https://github.com/bazo/deployer",
+	"authors": [
+		{
+			"name": "Martin Bažík",
+			"email": "martin@bazo.sk"
+		}
+	],
+	"license": "GPL-3.0",
+	"support": {
+		"issues": "https://github.com/bazo/deployer/issues",
+		"source": "https://github.com/bazo/deployer"
+	},
 	"require": {
 		"php": ">= 5.4.0",
 		"nette/nette": "@dev",
