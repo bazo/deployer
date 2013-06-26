@@ -5,6 +5,17 @@ Deployer
 
 Commander is a paas style deployment application(like pagodabox or appfog). It is intended for deployment of web applications on private vps servers
 
+## Features
+
+Automatic deploy on push
+Deploy any commit with one click
+Releases history
+Release re-deploy
+
+### Todo
+- rollback to previous release
+- private keys controlled deploy access
+
 ## Prerequisites
 
 - mongodb
@@ -26,7 +37,8 @@ if you wish to deploy from the application gui, you will need to run a WAMP serv
 - php wamp/server.php
 - php workers/deployWorker.php
 
-I suggest using supervisord to run these two processes in background
+I suggest using supervisord to run these two processes in background. You can run as many deploy workers as you want, if you need to deploy multiple applications at once.
+Only deploy of the same application can be run at one time. Automatic deploys do not use the deploy worker but are executed as post receive hook, in git process.
 
 ## Deploying applications
 
@@ -43,6 +55,7 @@ This folder will contain three subfolders:
 
 You can customize the deploy process by adding a deploy.neon file to the root fodler of your application
 The file has two sections:
+
 shared_folders - list of folders you want to share between releases
 hooks - commands executed at various stages of deployment:
 - after_receive - executed just after the pushed code has been checked out, great for running composer install
