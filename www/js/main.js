@@ -17,8 +17,12 @@ var connection;
 function main() {
 	
 	var $deployToggle = $('#deploy-toggle');
-
-	ab.connect("ws://localhost:8080",
+	
+	var host = wamp.host !== null ? wamp.host : window.location.hostname;
+	var port = wamp.port !== null ? wamp.port : 8080;
+	var connectionString = 'ws://' + host + ':'+ port.toString();
+	
+	ab.connect(connectionString,
 			function(connection) {
 				window.connection = connection;
 				

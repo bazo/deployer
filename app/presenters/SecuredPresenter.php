@@ -82,6 +82,7 @@ class SecuredPresenter extends BasePresenter
 			return sprintf('http://www.gravatar.com/avatar/%s?s=%d', $hash, $size);
 		});
 		$this->template->deploys = $this->deployProgress->listDeploys();
+		$this->template->wamp = $this->context->parameters['wamp'];
 	}
 
 }
