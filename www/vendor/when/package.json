@@ -1,6 +1,6 @@
 {
     "name": "when",
-    "version": "2.1.0",
+    "version": "2.5.1",
 	"description": "A lightweight Promises/A+ and when() implementation, plus other async goodies.",
 	"keywords": ["Promises/A+", "promises-aplus", "promise", "promises", "deferred", "deferreds", "when", "async", "asynchronous", "cujo"],
 	"homepage": "http://cujojs.com",
@@ -10,12 +10,10 @@
 			"url": "http://www.opensource.org/licenses/mit-license.php"
 		}
 	],
-	"repositories": [
-		{
-			"type": "git",
-			"url": "https://github.com/cujojs/when"
-		}
-	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/cujojs/when"
+	},
 	"bugs": "https://github.com/cujojs/when/issues",
 	"maintainers": [
 		{
@@ -42,16 +40,20 @@
 	],
 	"devDependencies": {
 		"curl": "https://github.com/cujojs/curl/tarball/0.7.3",
-		"test-support": "~0.2",
-		"promises-aplus-tests": "~1"
+		"test-support": "~0.3",
+		"promises-aplus-tests": "~2",
+		"benchmark": "~1",
+		"microtime": "~0"
 	},
 	"main": "when",
 	"directories": {
 		"test": "test"
 	},
 	"scripts": {
-		"test": "jshint . && buster test -e node && promises-aplus-tests test/promises-aplus-adapter.js",
+		"test": "jshint . && buster test -e node -r specification && promises-aplus-tests test/promises-aplus-adapter.js --reporter spec",
 		"ci": "npm test && sauceme",
-		"start": "buster static -e browser"
+		"tunnel": "sauceme -m",
+		"start": "buster static -e browser",
+		"benchmark": "node benchmark/promise && node benchmark/map"
 	}
 }

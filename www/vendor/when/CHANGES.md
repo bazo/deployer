@@ -1,3 +1,46 @@
+### 2.5.1
+
+* `ensure` now ignores non-functions, [like `then` does](http://promisesaplus.com/#point-25), for consistency. (#207)
+
+### 2.5.0
+
+* [Promises/A+ 1.1](http://promisesaplus.com) compliant.  Passes version 2.0.0 of the [Promises/A+ test suite](https://github.com/promises-aplus/promises-tests).
+
+### 2.4.1
+
+* New `MutationObserver` scheduler further reduces "time-to-first-handler" in modern browsers. (#198)
+	* Also, this works around a horrible IE10 bug (desktop and mobile) that renders `setImmediate`, `MessageChannel`, and `postMessage` unusable as fast task schedulers.  Many thanks to @plaa and @calvinmetcalf for their help in discovering the problem and working out a solution. (#197)
+
+### 2.4.0
+
+* Experimental support for [vert.x 2.x](http://vertx.io). Should now run in vert.x >= 1.1.0.
+* New `when.isPromiseLike` as the more accurately-named synonym for `when.isPromise`.
+* **DEPRECATED**: `when.isPromise`. It can only tell you that something is "promise-like" (aka "thenable") anyway. Use the new, more accurately-named `when.isPromiseLike` instead.
+* Fix for promise monitor reporting extra unhandled rejections for `when.all` and `when.map`.
+
+### 2.3.0
+
+* New [`promise.tap`](docs/api.md#tap) for adding side effects to a promise chain.
+* New `MessageChannel` scheduler reduces "time-to-first" handler, in environments that support it.
+* Performance optimizations for promise resolution.
+* Internal architecture improvements to pave the way for when.js 3.0.0.
+
+### 2.2.1
+
+* Fix for `when.defer().reject()` bypassing the unhandled rejection monitor. (#166)
+* Fix for `when/function`, `when/callbacks`, and `when/node/function` not preserving `thisArg`. (#162)
+* Doc clarifications for [`promise.yield`](docs/api.md#yield). (#164)
+
+### 2.2.0
+
+* New experimental [promise monitoring and debugging](docs.md#debugging-promises) via `when/monitor/console`.
+* New [`when.promise(resolver)`](docs/api.md#whenpromise) promise creation API. A lighter alternative to the heavier `when.defer()`
+* New `bindCallback` and `liftCallback` in `when/node/function` for more integration options with node-style callbacks.
+
+### 2.1.1
+
+* Quote internal usages of `promise.yield` to workaround .NET minifier tools that don't yet understand ES5 identifier-as-property rules.  See [#157](https://github.com/cujojs/when/issues/157)
+
 ### 2.1.0
 
 * New [`when.settle`](docs/api.md#whensettle) that settles an array of promises, regardless of whether the fulfill or reject.

@@ -1,5 +1,9 @@
 {
+	"name": "commander",
 	"dependencies": {
-		"jquery": "*"
+		"requirejs": "*",
+		"jquery": "*",
+		"autobahnjs": "*",
+		"whenjs": "*"
 	}
 }

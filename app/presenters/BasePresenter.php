@@ -20,5 +20,6 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
 	{
 		parent::beforeRender();
 		$this->template->ui = ArrayHash::from($this->context->parameters['ui']);
+		$this->template->wamp = $this->context->parameters['wamp'];
 	}
 }

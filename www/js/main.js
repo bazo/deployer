@@ -2,12 +2,34 @@ requirejs.config({
 	//By default load any module IDs from js/lib
 	baseUrl: '/js/',
 	paths: {
-		vendor: '/vendor'
+		vendor: '/vendor',
+		jquery: '/vendor/jquery/jquery',
+		when: '/vendor/when/when',
+		autobahn: '/vendor/autobahnjs/autobahn/autobahn'
+	},
+	shim: {
+		bootstrap: {
+			deps: ["jquery"]
+		},
+		autobahn: {
+			deps: ["when"]
+		}
 	}
 });
-require(
-	["vendor/jquery/jquery", "bootstrap", "netteForms", "moment.min", "livestamp.min", "nl2br", "underscore.string"],
-	function(jquery, bootstrap, netteForms, moment, livestamp, nl2br, _) {
+
+var dependencies = [
+	"jquery",
+	"bootstrap",
+	"netteForms",
+	"moment.min",
+	"livestamp.min", 
+	"nl2br", 
+	"underscore.string",
+	//"when",
+	//"autobahn"
+];
+
+require(dependencies, function(jquery, bootstrap, netteForms, moment, livestamp, nl2br, _, when, ab) {
 		main();
 	}
 );

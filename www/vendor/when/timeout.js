@@ -12,31 +12,32 @@
 
 (function(define) {
 define(function(require) {
-	/*global vertx,setTimeout,clearTimeout*/
-    var when, setTimer, cancelTimer;
+	/*global setTimeout,clearTimeout*/
+    var when, setTimer, cancelTimer, cjsRequire, vertx;
 
 	when = require('./when');
+	cjsRequire = require;
 
-	if(typeof vertx === 'object') {
+	try {
+		vertx = cjsRequire('vertx');
 		setTimer = function (f, ms) { return vertx.setTimer(ms, f); };
 		cancelTimer = vertx.cancelTimer;
-	} else {
+	} catch (e) {
 		setTimer = setTimeout;
 		cancelTimer = clearTimeout;
 	}
 
     /**
      * Returns a new promise that will automatically reject after msec if
-     * the supplied promise doesn't resolve or reject before that.
+     * the supplied trigger doesn't resolve or reject before that.
      *
 	 * @param {number} msec timeout in milliseconds
-     * @param {*} trigger - any promise or value that should trigger the
-	 * returned promise to resolve or reject before the msec timeout
-     * @returns {Promise}
+     * @param {*|Promise} trigger any promise or value that should trigger the
+	 *  returned promise to resolve or reject before the msec timeout
+     * @returns {Promise} promise that will timeout after msec, or be
+	 *  equivalent to trigger if resolved/rejected before msec
      */
     return function timeout(msec, trigger) {
-        var timeoutRef, rejectTimeout;
-
 		// Support reversed, deprecated argument ordering
 		if(typeof trigger === 'number') {
 			var tmp = trigger;
@@ -44,12 +45,11 @@ define(function(require) {
 			msec = tmp;
 		}
 
-		timeoutRef = setTimer(function onTimeout() {
-            rejectTimeout(new Error('timed out after ' + msec + 'ms'));
-        }, msec);
-
 		return when.promise(function(resolve, reject, notify) {
-			rejectTimeout = reject; // capture, tricky
+
+			var timeoutRef = setTimer(function onTimeout() {
+				reject(new Error('timed out after ' + msec + 'ms'));
+			}, msec);
 
 			when(trigger,
 				function onFulfill(value) {
@@ -66,8 +66,6 @@ define(function(require) {
     };
 });
 })(
-	typeof define === 'function' && define.amd ? define : function (factory) { module.exports = factory(require); }
-	// Boilerplate for AMD and Node
-);
+	typeof define === 'function' && define.amd ? define : function (factory) { module.exports = factory(require); });
 
 

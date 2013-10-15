@@ -123,7 +123,9 @@
 			var userId = {$user->getId()};
 			var wamp = {$wamp};
 		</script>
-		<script src="http://autobahn.s3.amazonaws.com/js/autobahn.min.js"></script>
+		{*<script src="http://autobahn.s3.amazonaws.com/js/autobahn.min.js"></script>*}
+		{*<script src="{$basePath}/vendor/autobahnjs/autobahn/autobahn.js"></script>*}
+		<script src="{$basePath}/js/autobahn.min.js"></script>
 		<script data-main="/js/main" src="{$basePath}/vendor/requirejs/require.js"></script>
 		{#scripts}
 		{/#}

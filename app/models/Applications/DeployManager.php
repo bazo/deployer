@@ -225,12 +225,13 @@ class DeployManager extends \BaseManager
 				$output = [];
 				$this->output->writeln($command);
 				exec(escapeshellcmd($command), $output, $returnVar);
-				if ($returnVar !== 0) {
+				var_dump($returnVar);
+				//if ($returnVar !== 0) {
 					foreach ($output as $line) {
 						$this->output->writeln(sprintf('<error>%s</error>', $line));
 					}
-					throw new DeployException(implode(' ', $output));
-				}
+					//throw new DeployException(implode(' ', $output));
+				//}
 				$this->output->writeln($output);
 			}
 		}
@@ -259,10 +260,9 @@ class DeployManager extends \BaseManager
 
 		chdir($releaseDir);
 		
-		//checkout the desired branch
+		//checkout the desired branch or commit
 		$output = [];
 		$returnVar = NULL;
-		//exec(sprintf('git --git-dir=%s/.git --work-tree=%s checkout %s', $releaseDir, $releaseDir, escapeshellarg($branch)), $output, $returnVar);
 		exec(sprintf('git --git-dir=%s/.git --work-tree=%s checkout %s', $releaseDir, $releaseDir, escapeshellarg($revision)), $output, $returnVar);
 		
 		//delete the .git direcotry

@@ -11,22 +11,29 @@
 
 (function(define) {
 define(function(require) {
-	/*global vertx,setTimeout*/
-	var when, setTimer;
+	/*global setTimeout*/
+	var when, setTimer, cjsRequire, vertxSetTimer;
 
 	when = require('./when');
+	cjsRequire = require;
 
-	setTimer = typeof vertx === 'object'
-		? function (f, ms) { return vertx.setTimer(ms, f); }
-		: setTimeout;
+	try {
+		vertxSetTimer = cjsRequire('vertx').setTimer;
+		setTimer = function (f, ms) { return vertxSetTimer(ms, f); };
+	} catch(e) {
+		setTimer = setTimeout;
+	}
 
     /**
-     * Creates a new promise that will resolve after a msec delay.  If promise
-     * is supplied, the delay will start *after* the supplied promise is resolved.
+     * Creates a new promise that will resolve after a msec delay.  If
+	 * value is supplied, the delay will start *after* the supplied
+	 * value is resolved.
      *
 	 * @param {number} msec delay in milliseconds
-     * @param {*} [value] any promise or value after which the delay will start
-	 * @returns {Promise}
+     * @param {*|Promise?} value any promise or value after which
+	 *  the delay will start
+	 * @returns {Promise} promise that is equivalent to value, only delayed
+	 *  by msec
      */
     return function delay(msec, value) {
 		// Support reversed, deprecated argument ordering
@@ -48,7 +55,6 @@ define(function(require) {
 
 });
 })(
-	typeof define === 'function' && define.amd ? define : function (factory) { module.exports = factory(require); }
-);
+	typeof define === 'function' && define.amd ? define : function (factory) { module.exports = factory(require); });
 
 

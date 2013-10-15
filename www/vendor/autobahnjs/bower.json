@@ -1,0 +1,8 @@
+{
+  "name": "autobahnjs",
+  "version": "0.7.9",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/tavendo/AutobahnJS.git"
+  }
+}
