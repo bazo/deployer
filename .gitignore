@@ -7,4 +7,5 @@ app/config/config.neon
 app/config/environment
 app/config/debug
 nbproject
-npm-debu.log
+npm-debug.log
+.htdeployment

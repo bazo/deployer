@@ -20,10 +20,12 @@ class MessagePublisher implements EventSubscriberInterface
 		$this->wampClient = $wampClient;
 	}
 
+
 	public function __destruct()
 	{
-		$this->wampClient->close();
+		$this->wampClient->disconnect();
 	}
+
 
 	public static function getSubscribedEvents()
 	{
@@ -38,21 +40,21 @@ class MessagePublisher implements EventSubscriberInterface
 	public function onMessageWrite(Events\Console\MessageWrite $event)
 	{
 		static $connected = FALSE;
-		
-		if(!$connected) {
+
+		if (!$connected) {
 			$this->wampClient->connect();
 			$connected = TRUE;
 		}
-		
+
 		$applicationId = $event->getApplicationId();
 		$message = $event->getMessage();
-		
+
 		$topicUri = 'deploy-progress';
 		$payload = [
 			'applicationId' => $applicationId,
 			'message' => $message
 		];
-		
+
 		$this->wampClient->publish($topicUri, $payload);
 	}
 

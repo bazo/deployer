@@ -11,7 +11,7 @@ use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Console\Helper\FormatterHelper;
 use Nette\Utils\Finder;
 use Nette\Utils\Strings;
-
+use Symfony\Component\Process\Process;
 
 /**
  * Description of DeployManager
@@ -38,7 +38,8 @@ class DeployManager extends \BaseManager
 
 	/** @var \Application */
 	private $application;
-	
+
+
 	public function __construct($releasesDir, $repositoriesDir, DocumentManager $dm, EventDispatcher $mediator, Filesystem $fs, DeployConsoleOutput $output, GitWrapper $git)
 	{
 		parent::__construct($dm, $mediator);
@@ -70,32 +71,33 @@ class DeployManager extends \BaseManager
 	{
 		$this->deploy($application, $branch, $revision);
 	}
-	
-	
+
+
 	public function deployAutomatic(\Application $application, $branch, $revision)
 	{
 		$applicationSettings = $application->getSettings();
 		if ($applicationSettings['auto_deploy'] !== TRUE or $applicationSettings['auto_deploy_branch'] !== $branch) {
 			return;
 		}
-		
+
 		$this->deploy($application, $branch, $revision);
 	}
-	
+
+
 	private function deploy(\Application $application, $branch, $revision)
 	{
 		$this->startDeploy($application);
-		
+
 		$originalDir = getcwd();
 		ob_implicit_flush(FALSE);
 		ob_start();
 		$applicationSettings = $application->getSettings();
 
 		$release = new \Release($application, $branch, $revision);
-		
+
 		$commitMessage = $this->readLastCommitMessage($application, $branch);
 		$release->setCommitMessage($commitMessage);
-		
+
 		$this->output->writeln(sprintf('Deploying branch <info>%s</info> release <info>%s</info>', $branch, $release->getNumber()));
 
 		$releaseDir = $this->prepareDeployFiles($application, $branch, $revision, $release);
@@ -159,7 +161,7 @@ class DeployManager extends \BaseManager
 
 		$application->setCurrentRelease($release);
 		$this->dm->persist($application);
-		
+
 		if (!empty($warnings)) {
 			$this->output->writeln(sprintf('<comment>Application not fully deployed. There were errors: %s</comment>', implode(' ', $warnings)));
 			$this->releaseWarning($release, $warnings);
@@ -167,10 +169,8 @@ class DeployManager extends \BaseManager
 			$this->output->writeln('<info>Application deployed!</info>');
 			$this->releaseSuccess($release);
 		}
-		
+
 		chdir($originalDir);
-		
-		
 	}
 
 
@@ -194,15 +194,17 @@ class DeployManager extends \BaseManager
 		$this->finishDeploy($release);
 	}
 
+
 	private function startDeploy(\Application $application)
 	{
 		$deployStartedEvent = new \Events\Application\DeployStarted($application->getId());
 		$this->mediator->dispatch(\Events\ApplicationEvents::DEPLOY_STARTED, $deployStartedEvent);
-		
+
 		$this->output->setApplicationId($application->getId());
 		$this->application = $application;
 	}
-	
+
+
 	private function finishDeploy(\Release $release)
 	{
 		$output = ob_get_contents();
@@ -210,10 +212,11 @@ class DeployManager extends \BaseManager
 		$release->setDeployOutput($this->output->getOutputBuffer());
 		$this->dm->persist($release);
 		$this->dm->flush();
-		
+
 		$deployFinishedEvent = new \Events\Application\DeployFinished($this->application->getId());
 		$this->mediator->dispatch(\Events\ApplicationEvents::DEPLOY_FINISHED, $deployFinishedEvent);
 	}
+
 
 	private function runHooks($commands, $dir)
 	{
@@ -224,19 +227,33 @@ class DeployManager extends \BaseManager
 			foreach ($commands as $command) {
 				$output = [];
 				$this->output->writeln($command);
-				exec(escapeshellcmd($command), $output, $returnVar);
-				var_dump($returnVar);
-				//if ($returnVar !== 0) {
-					foreach ($output as $line) {
-						$this->output->writeln(sprintf('<error>%s</error>', $line));
+
+				$process = new Process($commandline = escapeshellcmd($command), $dir);
+				$process->setTimeout(NULL);
+				$process->run(function ($type, $buffer) {
+					if ('err' === $type) {
+						$this->output->writeln(sprintf('<error>%s</error>', $buffer));
+					} else {
+						$this->output->writeln($buffer);
 					}
-					//throw new DeployException(implode(' ', $output));
-				//}
-				$this->output->writeln($output);
+				});
+				//exec(escapeshellcmd($command), $output, $returnVar);
+				/*
+				  var_dump($returnVar);exit;
+				  //if ($returnVar !== 0) {
+				  foreach ($output as $line) {
+				  $this->output->writeln(sprintf('<error>%s</error>', $line));
+				  }
+				  //throw new DeployException(implode(' ', $output));
+				  //}
+				  $this->output->writeln($output);
+				 * 
+				 */
 			}
 		}
 	}
-	
+
+
 	private function readLastCommitMessage(\Application $application, $branch)
 	{
 		$repositoryPath = $this->repostioriesDir . '/' . $application->getRepoName();
@@ -246,11 +263,11 @@ class DeployManager extends \BaseManager
 		$command = sprintf('git log %s %s', $format, $branch);
 		chdir($repositoryPath);
 		exec($command, $output, $returnVar);
-		
+
 		return current($output);
 	}
 
-	
+
 	private function prepareDeployFiles(\Application $application, $branch, $revision, $release)
 	{
 		$releaseDir = $this->releasesDir . '/' . $release->getNumber();
@@ -259,21 +276,21 @@ class DeployManager extends \BaseManager
 		$this->git->cloneRepository($repositoryPath, $releaseDir);
 
 		chdir($releaseDir);
-		
+
 		//checkout the desired branch or commit
 		$output = [];
 		$returnVar = NULL;
 		exec(sprintf('git --git-dir=%s/.git --work-tree=%s checkout %s', $releaseDir, $releaseDir, escapeshellarg($revision)), $output, $returnVar);
-		
+
 		//delete the .git direcotry
 		$this->fs->chmod('.git', 0777);
 		$output = [];
 		$returnVar = NULL;
 		exec('rm -r -f .git 2>&1', $output, $returnVar);
-		if($returnVar !== 0) {
+		if ($returnVar !== 0) {
 			$this->output->writeln('Could not remove .git folder. Falling back to stupid file copy.');
 		}
-		
+
 		return $releaseDir;
 	}
 
@@ -331,13 +348,13 @@ class DeployManager extends \BaseManager
 		$liveReleaseDir = $targetDir . '/releases/' . $release;
 
 		//stupid copy
-		if($this->fs->exists($releaseDir.'/.git')) {
+		if ($this->fs->exists($releaseDir . '/.git')) {
 			$filesAndFolders = Finder::find('*')->in($releaseDir);
 			$this->fs->mkdir($liveReleaseDir);
-			foreach($filesAndFolders as $file) {
+			foreach ($filesAndFolders as $file) {
 				//ignore .git files
-				if(!Strings::startsWith($file->getFilename(), '.git')) {
-					exec(sprintf('cp -ar %s %s', escapeshellarg($file->getRealpath()), escapeshellarg($liveReleaseDir.'/'.$file->getFilename())));
+				if (!Strings::startsWith($file->getFilename(), '.git')) {
+					exec(sprintf('cp -ar %s %s', escapeshellarg($file->getRealpath()), escapeshellarg($liveReleaseDir . '/' . $file->getFilename())));
 				}
 			}
 		} else {
@@ -345,7 +362,7 @@ class DeployManager extends \BaseManager
 			chdir($releaseDir . '/../');
 			exec(sprintf('cp -ar %s %s', escapeshellarg(basename($releaseDir)), escapeshellarg($liveReleaseDir)));
 		}
-		
+
 		chdir($targetDir);
 		//change dir only to execute mode
 		try {
@@ -353,7 +370,7 @@ class DeployManager extends \BaseManager
 		} catch (IOException $e) {
 			//ignore
 		}
-		
+
 		return $liveReleaseDir;
 	}
 

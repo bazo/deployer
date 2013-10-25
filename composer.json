@@ -22,6 +22,7 @@
 		"symfony/console": "@dev",
 		"symfony/event-dispatcher": "@dev",
 		"symfony/filesystem": "@dev",
+		"symfony/process": "@dev",
 		"doctrine/mongodb-odm": "@dev",
 		"bazo/nette-document-manager-extension": "@dev",
 		"kdyby/bootstrap-form-renderer": "@dev",
