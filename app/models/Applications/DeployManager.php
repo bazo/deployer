@@ -273,7 +273,14 @@ class DeployManager extends \BaseManager
 		$releaseDir = $this->releasesDir . '/' . $release->getNumber();
 		$repositoryPath = $this->repostioriesDir . '/' . $application->getRepoName();
 		$this->fs->mkdir($releaseDir);
-		$this->git->cloneRepository($repositoryPath, $releaseDir);
+		
+		try {
+			$this->git->cloneRepository($repositoryPath, $releaseDir);
+		} catch (\GitWrapper\GitException $e) {
+			$this->output->writeln(sprintf('<error>%s</error>', $e->getMessage()));
+			$this->output->writeln('Try again later.');
+			exit;
+		}
 
 		chdir($releaseDir);
 
