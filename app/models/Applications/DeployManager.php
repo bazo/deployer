@@ -13,6 +13,8 @@ use Nette\Utils\Finder;
 use Nette\Utils\Strings;
 use Symfony\Component\Process\Process;
 
+
+
 /**
  * Description of DeployManager
  *
@@ -38,6 +40,7 @@ class DeployManager extends \BaseManager
 
 	/** @var \Application */
 	private $application;
+
 
 
 	public function __construct($releasesDir, $repositoriesDir, DocumentManager $dm, EventDispatcher $mediator, Filesystem $fs, DeployConsoleOutput $output, GitWrapper $git)
@@ -237,18 +240,6 @@ class DeployManager extends \BaseManager
 						$this->output->writeln($buffer);
 					}
 				});
-				//exec(escapeshellcmd($command), $output, $returnVar);
-				/*
-				  var_dump($returnVar);exit;
-				  //if ($returnVar !== 0) {
-				  foreach ($output as $line) {
-				  $this->output->writeln(sprintf('<error>%s</error>', $line));
-				  }
-				  //throw new DeployException(implode(' ', $output));
-				  //}
-				  $this->output->writeln($output);
-				 * 
-				 */
 			}
 		}
 	}
@@ -273,7 +264,7 @@ class DeployManager extends \BaseManager
 		$releaseDir = $this->releasesDir . '/' . $release->getNumber();
 		$repositoryPath = $this->repostioriesDir . '/' . $application->getRepoName();
 		$this->fs->mkdir($releaseDir);
-		
+
 		try {
 			$this->git->cloneRepository($repositoryPath, $releaseDir);
 		} catch (\GitWrapper\GitException $e) {
@@ -446,4 +437,3 @@ class DeployManager extends \BaseManager
 
 
 }
-

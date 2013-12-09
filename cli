@@ -1,17 +1,12 @@
 #!/usr/bin/env php
 <?php
 
-// absolute filesystem path to this web root
-define('WWW_DIR', __DIR__ . '/www');
-
-// absolute filesystem path to the application root
-define('APP_DIR', __DIR__ . '/app');
-
-// absolute filesystem path to the libraries
-define('LIBS_DIR', __DIR__ . '/libs');
-
 // Let bootstrap create Dependency Injection container.
-$container = require APP_DIR . '/bootstrap.php';
+$configurator = require __DIR__ . '/app/bootstrap.php';
+$configurator->addConfig(__DIR__.'/app/config/console.neon');
+$container = $configurator->createContainer();
+// Run application.
+$container->application->run();
 
 //workaraound for kdyby redis panel
 Nette\Diagnostics\Debugger::getBlueScreen();

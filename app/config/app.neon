@@ -20,7 +20,7 @@ nette:
 parameters:
 
 	git:
-		binary: 
+		binary:
 		repositories:
 			path: %appDir%/../repositories
 	releasesDir: %appDir%/../releases
@@ -36,6 +36,14 @@ parameters:
 		host:
 		port: 8080
 
+extensions:
+	database: Bazo\MongoDb\DI\DocumentManagerExtension
+	odmCommands: Bazo\MongoDb\DI\DoctrineODMCommandsExtension
+	console: Bazo\Console\DI\ConsoleExtension
+	mediator: Bazo\Mediator\DI\MediatorExtension
+	redis: Kdyby\Redis\DI\RedisExtension
+	newrelic: Bazo\NewRelic\DI\NewRelicExtension
+
 database:
 	dbname: %db.name%
 	uri: mongodb://localhost/%db.name%
@@ -48,6 +56,10 @@ redis:
 	database: 0
 	session: {database: 1}
 	debugger: off
+
+newrelic:
+	appName: Deployer
+	useLogger: FALSE
 
 services:
 
@@ -88,6 +100,6 @@ services:
 	queueManager: Queue\QueueManager
 
 	deployWorker: DeployWorker
-	messagePublisher: 
+	messagePublisher:
 		class: MessagePublisher
 		tags: ['subscriber']

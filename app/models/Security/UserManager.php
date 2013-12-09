@@ -2,6 +2,8 @@
 
 namespace Security;
 
+use Nette\Security\AuthenticationException;
+
 /**
  * UserManager
  *
@@ -23,7 +25,7 @@ class UserManager extends \BaseManager implements \Nette\Security\IAuthenticator
 		$user = $this->dm->getRepository('User')->findOneBy(['login' => $login]);
 
 		if ($user === null or !password_verify($password, $user->getPassword())) {
-			throw new Nette\Security\AuthenticationException('Invalid credentials.', self::INVALID_CREDENTIAL);
+			throw new AuthenticationException('Invalid credentials.', self::INVALID_CREDENTIAL);
 		}
 
 		return $user;
