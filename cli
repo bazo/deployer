@@ -5,8 +5,6 @@
 $configurator = require __DIR__ . '/app/bootstrap.php';
 $configurator->addConfig(__DIR__.'/app/config/console.neon');
 $container = $configurator->createContainer();
-// Run application.
-$container->application->run();
 
 //workaraound for kdyby redis panel
 Nette\Diagnostics\Debugger::getBlueScreen();

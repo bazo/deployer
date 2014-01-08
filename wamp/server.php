@@ -6,7 +6,8 @@ use Ratchet\Wamp\WampServer;
 use Ratchet\Session\SessionProvider;
 use Nette\Application\Routers\Route;
 
-$container = require_once __DIR__ . '/../app/bootstrap.php';
+$configurator = require __DIR__ . '/../app/bootstrap.php';
+$container = $configurator->createContainer();
 
 $port = $container->parameters['wamp']['port'];
 
