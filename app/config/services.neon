@@ -36,7 +36,7 @@ services:
 	client: \WAMP\WAMPClient('http://localhost:8080')
 	queueManager: Queue\QueueManager
 
-	#deployWorker: DeployWorker
+	deployWorker: DeployWorker
 	messagePublisher:
 		class: MessagePublisher
 		tags: ['subscriber']
