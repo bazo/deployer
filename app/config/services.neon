@@ -1,0 +1,42 @@
+services:
+
+	#routing
+	- App\RouterFactory
+	router: @App\RouterFactory::createRouter
+
+	#cache
+	metaDataCache: Doctrine\Common\Cache\FilesystemCache(%tempDir%/metadatacache)
+
+	#utilities
+	- GitWrapper\GitWrapper(%git.binary%)
+	- Symfony\Component\Filesystem\Filesystem
+	deployConsoleOutput:
+		class: Commander\Console\DeployConsoleOutput(..., Symfony\Component\Console\Output\OutputInterface::VERBOSITY_DEBUG)
+		autowired: false
+
+	- Symfony\Component\Console\Output\ConsoleOutput(Symfony\Component\Console\Output\OutputInterface::VERBOSITY_DEBUG)
+
+	#security
+	- Security\UserManager
+
+	#applications
+	- Applications\ApplicationManager
+	- Applications\DeployManager(%releasesDir%, %git.repositories.path%, ..., ..., ..., @deployConsoleOutput, ...)
+	deployProgress:
+		class: Applications\DeployProgress
+		tags: ['subscriber']
+
+	#git
+	gitManager:
+		class: Git\GitManager(%git.repositories.path%, %appDir%/config/hooks)
+		tags: [subscriber]
+
+	#wamp
+	wsServer: WAMP\Server
+	client: \WAMP\WAMPClient('http://localhost:8080')
+	queueManager: Queue\QueueManager
+
+	#deployWorker: DeployWorker
+	messagePublisher:
+		class: MessagePublisher
+		tags: ['subscriber']

@@ -1,0 +1,18 @@
+parameters:
+
+	git:
+		binary:
+		repositories:
+			path: %appDir%/../repositories
+	releasesDir: %appDir%/../releases
+
+	db:
+		name: deployer
+
+	ui:
+		theme: default
+		responsive: false
+
+	wamp:
+		host: 127.0.0.1
+		port: 8080

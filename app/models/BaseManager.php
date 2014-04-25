@@ -3,6 +3,8 @@
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
+
+
 /**
  * Description of BaseManager
  *
@@ -10,19 +12,23 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
  */
 class BaseManager
 {
+
 	/** @var DocumentManager */
 	protected $dm;
 
 	/** @var EventDispatcher */
 	protected $mediator;
-	
+
+
+
 	/**
-	 * @param \Doctrine\ODM\MongoDB\DocumentManager $dm
+	 * @param DocumentManager $dm
 	 */
 	public function __construct(DocumentManager $dm, EventDispatcher $mediator)
 	{
 		$this->dm = $dm;
 		$this->mediator = $mediator;
 	}
+
 
 }

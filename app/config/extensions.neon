@@ -1,0 +1,24 @@
+extensions:
+	db: Bazo\MongoDb\DI\DocumentManagerExtension
+	- Bazo\MongoDb\DI\DoctrineODMCommandsExtension
+	- Bazo\Console\DI\ConsoleExtension
+	- Bazo\Mediator\DI\MediatorExtension
+	redis: Kdyby\Redis\DI\RedisExtension
+	#newrelic: Bazo\NewRelic\DI\NewRelicExtension
+
+db:
+	dbname: %db.name%
+	uri: mongodb://localhost/%db.name%
+	cachePrefix: %db.name%
+	metaDataCache: @metaDataCache
+
+redis:
+	storage: on
+	journal: on
+	database: 0
+	session: {database: 1}
+	debugger: off
+
+#newrelic:
+#	appName: Deployer
+#	useLogger: FALSE

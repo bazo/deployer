@@ -4,8 +4,8 @@ namespace Deployer;
 
 use Commander\Application\UI\Form\Form;
 use Nette\Utils\Strings;
-use Applications\ApplicationManager;
-use Applications\DeployProgress;
+
+
 
 /**
  * Secured presenter.
@@ -13,20 +13,18 @@ use Applications\DeployProgress;
 class SecuredPresenter extends BasePresenter
 {
 
-	/** @var ApplicationManager */
-	protected $applicationManager;
-
-	/** @var DeployProgress */
-	protected $deployProgress;
+	/**
+	 * @inject
+	 * @var \Applications\ApplicationManager
+	 */
+	public $applicationManager;
 
 	/**
-	 * @param ApplicationManager $applicationManager
+	 * @inject
+	 * @var \Applications\DeployProgress
 	 */
-	public function inject(ApplicationManager $applicationManager, DeployProgress $deployProgress)
-	{
-		$this->applicationManager = $applicationManager;
-		$this->deployProgress = $deployProgress;
-	}
+	public $deployProgress;
+
 
 
 	protected function startup()
@@ -73,17 +71,17 @@ class SecuredPresenter extends BasePresenter
 
 		$this->redirect('applications:');
 	}
-	
+
+
 	protected function beforeRender()
 	{
 		parent::beforeRender();
-		$this->template->registerHelper('gravatar', function($email, $size = 30){
+		$this->template->registerHelper('gravatar', function($email, $size = 30) {
 			$hash = md5(Strings::lower(Strings::trim($email)));
 			return sprintf('http://www.gravatar.com/avatar/%s?s=%d', $hash, $size);
 		});
 		$this->template->deploys = $this->deployProgress->listDeploys();
 	}
 
+
 }
-
-

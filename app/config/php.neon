@@ -1,0 +1,3 @@
+php:
+	date.timezone: Europe/Bratislava
+	# zlib.output_compression: yes
