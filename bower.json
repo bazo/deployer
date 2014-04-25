@@ -3,6 +3,7 @@
 	"dependencies": {
 		"requirejs": "*",
 		"jquery": "*",
-		"autobahnjs": "*"
+		"autobahnjs": "*",
+		"when": "*"
 	}
 }
