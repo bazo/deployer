@@ -1,5 +1,5 @@
 {extends ../@layout.latte}
-{#content}
+{block content}
 
 <div class="row">
 	<div class="span12">
@@ -17,8 +17,8 @@
 		</div>
 	</div>
 </div>
-	
-	
+
+
 <div class="row">
 	<div class="span12">
 		<ul class="nav nav-tabs">
@@ -38,7 +38,7 @@
 {include #tab}
 {/}
 
-{#scripts}
+{block scripts}
 	<script>
 		var applicationId = {$application->getId()}
 	</script>

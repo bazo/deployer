@@ -1,15 +1,15 @@
-{#content}
+{block content}
 
 <div class="row">
-	
+
 	<h1>Applications</h1>
-	
+
 	<div class="span12" n:inner-foreach="$applications as $application">
 		{include #application application => $application}
 	</div>
 </div>
 
-{/#}
+{/block}
 
 {define #application}
 <div class="well application">

@@ -29,7 +29,7 @@ class ApplicationPresenter extends SecuredPresenter
 
 	/** @var IStorage */
 	private $cacheStorage;
-	
+
 	/** @persistent */
 	public $id;
 
@@ -47,21 +47,21 @@ class ApplicationPresenter extends SecuredPresenter
 		$this->repositoriesPath = $this->context->parameters['git']['repositories']['path'];
 		$id = $this->getParameter('id');
 		$this->application = $this->applicationManager->loadApplication($id);
-		
+
 		$activeBranch = $this->gitManager->getActiveBranch($this->application);
 	}
 
-	
+
 	public function renderRelease($release_id)
 	{
 		$release = $this->applicationManager->getRelease($this->application, $release_id);
 		$this->template->release = $release;
 	}
-	
+
 	public function renderReleases()
 	{
 		$releaseHistory = $this->applicationManager->getReleaseHistory($this->application);
-		
+
 		$this->template->releaseHistory = $releaseHistory;
 	}
 
@@ -70,10 +70,10 @@ class ApplicationPresenter extends SecuredPresenter
 		$branches = $this->gitManager->loadBranches($this->application);
 		$selectedBranch = $this->getHttpRequest()->getCookie($this->user->getId().'-branch');
 		$selectedBranch = $selectedBranch !== NULL ? $selectedBranch : $branches[0];
-		
+
 		$cache = new \Nette\Caching\Cache($this->cacheStorage, 'commits');
 		$key = 'commits-'.$this->application->getId().'-'.$selectedBranch;
-		
+
 		$commitsByDate = $cache->load($key);
 		if($commitsByDate === NULL) {
 			$log = $this->gitManager->loadCommits($this->application, $selectedBranch);
@@ -83,15 +83,15 @@ class ApplicationPresenter extends SecuredPresenter
 				$date = date('Y-m-d', $commit['timestamp']);
 				$commitsByDate[$date][] = $commit;
 			}
-			
+
 			$cache->save($key, $commitsByDate);
 		}
-		
+
 		$this->template->commitsByDate = $commitsByDate;
 		$this->template->branches = $branches;
 		$this->template->selectedBranch = $selectedBranch;
 	}
-	
+
 	public function actionSettings()
 	{
 		$branchValues = $this->createBranchValues();
@@ -107,11 +107,11 @@ class ApplicationPresenter extends SecuredPresenter
 				$branchValues[$branch] = $branch;
 			}
 		} catch (\GitWrapper\GitException $e) {
-			
+
 		}
 		return $branchValues;
 	}
-	
+
 
 	public function renderSettings()
 	{
@@ -131,7 +131,7 @@ class ApplicationPresenter extends SecuredPresenter
 				'commit' => $commit,
 				'userId' => $this->getUser()->getId()
 			];
-			
+
 			return json_encode($data);
 		});
 	}
@@ -208,10 +208,10 @@ class ApplicationPresenter extends SecuredPresenter
 		}
 		$this->redirect('this');
 	}
-	
+
 	public function handleChangeBranch($branch)
 	{
-		$this->getHttpResponse()->setCookie($this->user->getId().'-branch', $branch, PHP_INT_MAX); //expire somewhere in far future
+		$this->getHttpResponse()->setCookie($this->user->getId().'-branch', $branch, 2000000); //expire somewhere in far future
 		$this->redirect('this');
 	}
 

@@ -3,9 +3,9 @@ requirejs.config({
 	baseUrl: '/js/',
 	paths: {
 		vendor: '/vendor',
-		jquery: '/vendor/jquery/jquery',
+		jquery: '/vendor/jquery/dist/jquery.min',
 		when: '/vendor/when/when',
-		autobahn: '/vendor/autobahnjs/autobahn/autobahn',
+		autobahn: '/vendor/autobahnjs/package/lib/autobahn',
 		livestamp: 'livestamp.min'
 	},
 	shim: {

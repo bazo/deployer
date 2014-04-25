@@ -2,7 +2,7 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>{#title|striptags}Commander{/#}</title>
+		<title>{block title|striptags}Commander{/block}</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="description" content="">
 		<meta name="author" content="">
@@ -23,8 +23,8 @@
 		<![endif]-->
 
 		<!-- Fav and touch icons -->
-		{#head}{/#}
-		
+		{block head}{/block}
+
 	</head>
 
 	<body>
@@ -38,7 +38,7 @@
 						<span class="icon-bar"></span>
 					</button>
 					<a class="brand" href="#">Commander</a>
-					
+
 					<div n:if="$user->isLoggedIn()">
 						<div class="nav-collapse collapse">
 							<ul class="nav">
@@ -87,7 +87,7 @@
 				{include newApplicationForm.latte}
 			{/}
 
-			{include #content}	
+			{include #content}
 		</div>
 
 		<div n:if="$user->isLoggedIn()" id="deploys" class="modal hide fade">
@@ -96,7 +96,7 @@
 				<h3>Running deploys</h3>
 			</div>
 			<div class="modal-body">
-				
+
 				<div class="accordion" id="deploys-accordion">
 					<div class="accordion-group" n:foreach="$deploys as $applicationId => $messages" id="accordion-{$applicationId}">
 						<div class="accordion-heading">
@@ -107,7 +107,7 @@
 						<div id="collapse-{$applicationId}" class="accordion-body collapse">
 							<div class="accordion-inner well" id="output-{$applicationId}">
 								{foreach $messages as $message}
-									{!$message|nl2br}
+									{$message|nl2br|noescape}
 								{/}
 							</div>
 						</div>
@@ -118,7 +118,7 @@
 				<a href="#" data-dismiss="modal" class="btn btn-primary">Close</a>
 			</div>
 		</div>
-		
+
 		<script>
 			var userId = {$user->getId()};
 			var wamp = {$wamp};
@@ -127,8 +127,8 @@
 		{*<script src="{$basePath}/vendor/autobahnjs/autobahn/autobahn.js"></script>*}
 		<script src="{$basePath}/js/autobahn.min.js"></script>
 		<script data-main="/js/main" src="{$basePath}/vendor/requirejs/require.js"></script>
-		{#scripts}
-		{/#}
+		{block scripts}
+		{/block}
 
 	</body>
 </html>

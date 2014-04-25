@@ -6,6 +6,8 @@ use Symfony\Component\Filesystem\Filesystem;
 use GitWrapper\GitWrapper;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
+
+
 /**
  * Description of ApplicationManager
  *
@@ -23,6 +25,7 @@ class GitManager implements EventSubscriberInterface
 
 	/** @var string */
 	private $hookTemplatesPath;
+
 
 
 	public function __construct($repositoriesPath, $hookTemplatesPath, Filesystem $fs, GitWrapper $git)
@@ -92,36 +95,38 @@ class GitManager implements EventSubscriberInterface
 		return $branches->fetchLocalBranches();
 	}
 
+
 	public function loadCommits(\Application $application, $branch = 'master')
 	{
 		$path = $this->formatRepositoryPath($application);
-		
+
 		$returnVar = NULL;
 		$output = [];
 		$retries = 0;
-		while($returnVar !== 0) {
+		while ($returnVar !== 0) {
 			//we run the command explicitely due to windows bug, % gets escaped to space
 			$format = '--pretty=format:"hash=%H&author_name=%an&author_email=%ae&time_relative=%ar&timestamp=%at&message=%s"';
 			$command = sprintf('git log %s %s', $format, $branch);
 			chdir($path);
 			exec($command, $output, $returnVar);
-			if($returnVar !== 0) {
+			if ($returnVar !== 0) {
 				exec('git gc'); //maybe some loose objects
 			}
 			$retries++;
-			if($retries > 5 or empty($output)) {
+			if ($retries > 5 or empty($output)) {
 				break;
 			}
 		}
 		return !empty($output) ? LogParser::parseLines($output) : [];
 	}
 
+
 	private function formatRepositoryPath(\Application $application)
 	{
 		return $this->repositoriesPath . '/' . $application->getRepoName();
 	}
-	
-	
+
+
 	public function getActiveBranch(\Application $application)
 	{
 		return '';
@@ -129,5 +134,3 @@ class GitManager implements EventSubscriberInterface
 
 
 }
-
-

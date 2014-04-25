@@ -6,6 +6,8 @@ use Symfony\Component\Filesystem\Filesystem;
 use Events\ApplicationEvents;
 use Events\Application\ApplicationCreatedEvent;
 
+
+
 /**
  * Description of ApplicationManager
  *
@@ -69,27 +71,27 @@ class ApplicationManager extends \BaseManager
 		$this->dm->persist($application);
 		$this->dm->flush();
 	}
-	
+
+
 	public function getReleaseHistory(\Application $application)
 	{
 		$qb = $this->dm->getRepository('Release')->createQueryBuilder();
 		$qb->field('application.id')->equals($application->getId())
-			->sort('date', 'desc');
+				->sort('date', 'desc');
 		return $qb->getQuery()->execute();
 	}
-	
+
+
 	public function getRelease(\Application $application, $releaseId)
 	{
 		return $this->dm->getRepository('Release')->findOneBy(['id' => $releaseId]);
-		
+
 		$qb = $this->dm->getRepository('Release')->createQueryBuilder();
 		$qb->field('application.id')->equals($application->getId())
-			->field('id')->equals($releaseId);
-			
+				->field('id')->equals($releaseId);
+
 		return $qb->getQuery()->execute()->getNext();
 	}
 
 
 }
-
-

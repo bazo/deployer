@@ -113,10 +113,20 @@ class DeployManager extends \BaseManager
 			return;
 		}
 
+		//$_ENV for hook commands
+		$env = [
+			'branch' => $branch,
+			'revision' => $revision,
+			'release' => $release->getNumber()
+		];
+
+		$neonEnv = \Nette\Utils\Neon::encode($env);
+		file_put_contents('env.neon', $neonEnv);
+
 		//run after receive hooks
 		try {
 			$this->output->writeln('<info>Running after receive hooks</info>');
-			$this->runHooks($commands['afterReceiveHooks'], $releaseDir);
+			$this->runHooks($commands['afterReceiveHooks'], $releaseDir, $env);
 		} catch (DeployException $e) {
 			$reason = 'After receive hooks failed. Deploy aborted.';
 			$this->releaseFail($release, $reason);
@@ -130,7 +140,7 @@ class DeployManager extends \BaseManager
 		//run before deploy hooks
 		try {
 			$this->output->writeln('<info>Running before deploy hooks</info>');
-			$this->runHooks($commands['beforeDeployHooks'], $liveReleaseDir);
+			$this->runHooks($commands['beforeDeployHooks'], $liveReleaseDir, $env);
 		} catch (DeployException $e) {
 			$reason = 'Before deploy hooks failed. Deploy aborted.';
 			$this->releaseFail($release, $reason);
@@ -154,7 +164,7 @@ class DeployManager extends \BaseManager
 		//run after deploy hooks
 		try {
 			$this->output->writeln('<info>Running after deploy hooks</info>');
-			$this->runHooks($commands['afterDeployHooks'], $liveReleaseDir);
+			$this->runHooks($commands['afterDeployHooks'], $liveReleaseDir, $env);
 		} catch (DeployException $e) {
 			$reason = 'After deploy hooks failed';
 			$warnings[] = $reason;
@@ -221,7 +231,7 @@ class DeployManager extends \BaseManager
 	}
 
 
-	private function runHooks($commands, $dir)
+	private function runHooks($commands, $dir, $env)
 	{
 		if (!empty($commands)) {
 			chdir($dir);
@@ -232,6 +242,14 @@ class DeployManager extends \BaseManager
 				$this->output->writeln($command);
 
 				$process = new Process($commandline = escapeshellcmd($command), $dir);
+
+				//removes PATH
+				/*
+				  $originalEnv = $process->getEnv();
+				  $env = array_merge($originalEnv, $env);
+				  $process->setEnv($env);
+				 */
+
 				$process->setTimeout(NULL);
 				$process->run(function ($type, $buffer) {
 					if ('err' === $type) {

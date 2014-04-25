@@ -1,11 +1,11 @@
-{#tab}
+{block tab}
 <div class="tab-content">
 	<div class="row">
 		<div class="span12" id="release">
 			{include #backlink}
 			{var $deployedRelease = $application->getCurrentRelease()->getId() === $release->getId() ? success}
 			<h2>Release: {$release->getNumber()}</h2>
-			
+
 			<table class="table">
 				<tr>
 					<th>Date</th>
@@ -28,17 +28,17 @@
 						</td>
 					</tr>
 			</table>
-							
+
 			<div id="deploy-output" class="well">
 				<h3>Deploy output:</h3>
-				{!$release->getDeployOutput()|nl2br}
+				{$release->getDeployOutput()|nl2br|noescape}
 			</div>
-			
+
 			{include #backlink}
 		</div>
 	</div>
 </div>
-				
+
 
 {define #status}
 	{var $class = $status}
