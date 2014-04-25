@@ -13,6 +13,7 @@ parameters:
 		theme: default
 		responsive: false
 
+	#frontend settings
 	wamp:
-		host: 127.0.0.1
+		host:
 		port: 8080
