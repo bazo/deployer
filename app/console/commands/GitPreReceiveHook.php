@@ -2,6 +2,7 @@
 
 namespace Console\Command;
 
+
 use Symfony\Component\Console;
 use Applications\DeployManager;
 use Applications\ApplicationManager;
@@ -23,17 +24,12 @@ class GitPreReceiveHook extends Console\Command\Command
 	/** @var DeployProgress */
 	private $deployProgress;
 
-
-	/**
-	 * @param DeployManager $deployManager
-	 * @param ApplicationManager $applicationManager
-	 * @param DeployProgress $deployProgress
-	 */
-	public function inject(DeployManager $deployManager, ApplicationManager $applicationManager, DeployProgress $deployProgress)
+	function __construct(DeployManager $deployManager, ApplicationManager $applicationManager, DeployProgress $deployProgress)
 	{
-		$this->deployManager = $deployManager;
-		$this->applicationManager = $applicationManager;
-		$this->deployProgress = $deployProgress;
+		parent::__construct();
+		$this->deployManager		 = $deployManager;
+		$this->applicationManager	 = $applicationManager;
+		$this->deployProgress		 = $deployProgress;
 	}
 
 
@@ -50,10 +46,10 @@ class GitPreReceiveHook extends Console\Command\Command
 
 	protected function execute(Console\Input\InputInterface $input, Console\Output\OutputInterface $output)
 	{
-		$repository = $input->getArgument('repository');
-		$oldrev = $input->getArgument('oldrev');
-		$newrev = $input->getArgument('newrev');
-		$refname = $input->getArgument('refname');
+		$repository	 = $input->getArgument('repository');
+		$oldrev		 = $input->getArgument('oldrev');
+		$newrev		 = $input->getArgument('newrev');
+		$refname	 = $input->getArgument('refname');
 
 		$branch = str_replace('refs/heads/', '', $refname);
 
@@ -62,8 +58,8 @@ class GitPreReceiveHook extends Console\Command\Command
 			$output->writeln(sprintf('<error>Cannot find application for repository %s</error>', $repository));
 			exit(1);
 		}
-		
-		if($this->deployProgress->isDeployRunning($application->getId())) {
+
+		if ($this->deployProgress->isDeployRunning($application->getId())) {
 			$output->writeln(sprintf('<error>There is a deploy running for this application. Try again later.</error>', $repository));
 			exit(1);
 		}
@@ -71,4 +67,3 @@ class GitPreReceiveHook extends Console\Command\Command
 
 
 }
-

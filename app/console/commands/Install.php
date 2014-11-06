@@ -2,6 +2,7 @@
 
 namespace Console\Command;
 
+
 use Symfony\Component\Console;
 
 /**
@@ -14,7 +15,7 @@ class Install extends Console\Command\Command
 	protected function configure()
 	{
 		$this->setName('app:install')
-			 ->setDescription('Installs application');
+				->setDescription('Installs application');
 	}
 
 
@@ -39,4 +40,3 @@ class Install extends Console\Command\Command
 
 
 }
-

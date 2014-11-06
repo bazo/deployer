@@ -2,34 +2,40 @@
 
 namespace Console\Command;
 
+
 use Symfony\Component\Console;
 
 /**
  * Delete cache
  * @author Martin Bažík <martin@bazo.sk>
  */
-class DeleteCache extends Console\Command\Command {
+class DeleteCache extends Console\Command\Command
+{
 
-    protected function configure() {
-        $this->setName('app:cache:delete')
-             ->setDescription('Deletes cache');
-    }
+	protected function configure()
+	{
+		$this->setName('app:cache:delete')
+				->setDescription('Deletes cache');
+	}
 
-    protected function execute(Console\Input\InputInterface $input, Console\Output\OutputInterface $output) {
 
-        $context = $this->getHelper('containerHelper')->getContainer();
+	protected function execute(Console\Input\InputInterface $input, Console\Output\OutputInterface $output)
+	{
 
-        $tempDir = $context->parameters['tempDir'];
-        $cacheDir = $tempDir . '/cache';
+		$context = $this->getHelper('containerHelper')->getContainer();
 
-        $output->writeln(sprintf('deleting cache directory %s ', $cacheDir));
+		$tempDir	 = $context->parameters['tempDir'];
+		$cacheDir	 = $tempDir . '/cache';
 
-        exec(sprintf('rm -r "%s"', $cacheDir));
+		$output->writeln(sprintf('deleting cache directory %s ', $cacheDir));
 
-        $context->eventLog->setConsoleUser();
-        $context->eventLog->appendLog("system", "deleteCache", "OK");
+		exec(sprintf('rm -r "%s"', $cacheDir));
 
-        $output->writeln('<info>done</info>');
-    }
+		$context->eventLog->setConsoleUser();
+		$context->eventLog->appendLog("system", "deleteCache", "OK");
+
+		$output->writeln('<info>done</info>');
+	}
+
+
 }
-

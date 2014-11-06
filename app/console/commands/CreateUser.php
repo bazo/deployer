@@ -2,6 +2,7 @@
 
 namespace Console\Command;
 
+
 use Symfony\Component\Console;
 
 /**
@@ -19,11 +20,13 @@ class CreateUser extends Console\Command\Command
 		$this->userManager = $userManager;
 	}
 
+
 	protected function configure()
 	{
 		$this->setName('user:create')
 				->setDescription('Creates a new user account');
 	}
+
 
 	protected function execute(Console\Input\InputInterface $input, Console\Output\OutputInterface $output)
 	{
@@ -47,12 +50,13 @@ class CreateUser extends Console\Command\Command
 			return $value;
 		};
 
-		$login = $dialog->askAndValidate($output, 'Please enter login: ', $loginValidator, $retries = 20);
-		$password = $dialog->askHiddenResponseAndValidate($output, 'Please enter password: ', $passwordValidator, $retries = 20, true);
-		
+		$login		 = $dialog->askAndValidate($output, 'Please enter login: ', $loginValidator, $retries	 = 20);
+		$password	 = $dialog->askHiddenResponseAndValidate($output, 'Please enter password: ', $passwordValidator, $retries	 = 20, true);
+
 		$this->userManager->createUser($login, $password);
 
 		$output->writeln(sprintf('<info>User %s successfully created.</info>', $login));
 	}
+
 
 }

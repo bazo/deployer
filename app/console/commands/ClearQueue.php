@@ -2,6 +2,7 @@
 
 namespace Console\Command;
 
+
 use Symfony\Component\Console;
 use Queue\QueueManager;
 use Applications\DeployProgress;
@@ -19,11 +20,11 @@ class ClearQueue extends Console\Command\Command
 	/** @var DeployProgress */
 	private $deployProgress;
 
-	public function injectQm(QueueManager $qm, DeployProgress $deployProgress)
+	function __construct(QueueManager $qm, DeployProgress $deployProgress)
 	{
-		$this->qm = $qm;
-		$this->deployProgress = $deployProgress;
-		return $this;
+		parent::__construct();
+		$this->qm				 = $qm;
+		$this->deployProgress	 = $deployProgress;
 	}
 
 
@@ -38,10 +39,9 @@ class ClearQueue extends Console\Command\Command
 	{
 		$queue = 'deploy';
 		$this->qm->clearQueue($queue);
-		
+
 		$this->deployProgress->clearDeploys();
 	}
 
 
 }
-

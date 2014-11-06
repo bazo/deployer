@@ -2,18 +2,18 @@
 
 namespace Applications;
 
+
 use Symfony\Component\Filesystem\Filesystem;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Commander\Console\DeployConsoleOutput;
 use GitWrapper\GitWrapper;
 use Symfony\Component\Filesystem\Exception\IOException;
-use Symfony\Component\Console\Helper\FormatterHelper;
 use Nette\Utils\Finder;
 use Nette\Utils\Strings;
 use Symfony\Component\Process\Process;
-
-
+use Nette\Neon\Neon;
+use Nette\Neon\Exception as NeonException;
 
 /**
  * Description of DeployManager
@@ -41,16 +41,14 @@ class DeployManager extends \BaseManager
 	/** @var \Application */
 	private $application;
 
-
-
 	public function __construct($releasesDir, $repositoriesDir, DocumentManager $dm, EventDispatcher $mediator, Filesystem $fs, DeployConsoleOutput $output, GitWrapper $git)
 	{
 		parent::__construct($dm, $mediator);
-		$this->releasesDir = $releasesDir;
-		$this->repostioriesDir = $repositoriesDir;
-		$this->fs = $fs;
-		$this->output = $output;
-		$this->git = $git;
+		$this->releasesDir		 = $releasesDir;
+		$this->repostioriesDir	 = $repositoriesDir;
+		$this->fs				 = $fs;
+		$this->output			 = $output;
+		$this->git				 = $git;
 	}
 
 
@@ -91,7 +89,7 @@ class DeployManager extends \BaseManager
 	{
 		$this->startDeploy($application);
 
-		$originalDir = getcwd();
+		$originalDir		 = getcwd();
 		ob_implicit_flush(FALSE);
 		ob_start();
 		$applicationSettings = $application->getSettings();
@@ -106,7 +104,7 @@ class DeployManager extends \BaseManager
 		$releaseDir = $this->prepareDeployFiles($application, $branch, $revision, $release);
 		try {
 			$commands = $this->parseCommandFile($releaseDir);
-		} catch (\Nette\Utils\NeonException $e) {
+		} catch (NeonException $e) {
 			$reason = 'Unable to read command file, aborting. Reason: ' . $e->getMessage();
 			$this->releaseFail($release, $reason);
 			$this->output->writeln(sprintf('<error>%s</error>', $reason));
@@ -115,12 +113,12 @@ class DeployManager extends \BaseManager
 
 		//$_ENV for hook commands
 		$env = [
-			'branch' => $branch,
-			'revision' => $revision,
-			'release' => $release->getNumber()
+			'branch'	 => $branch,
+			'revision'	 => $revision,
+			'release'	 => $release->getNumber()
 		];
 
-		$neonEnv = \Nette\Utils\Neon::encode($env);
+		$neonEnv = Neon::encode($env);
 		file_put_contents('env.neon', $neonEnv);
 
 		//run after receive hooks
@@ -134,8 +132,8 @@ class DeployManager extends \BaseManager
 			return;
 		}
 
-		$rootDir = $applicationSettings['deploy_dir'];
-		$liveReleaseDir = $this->copyRelease($releaseDir, $rootDir, $release);
+		$rootDir		 = $applicationSettings['deploy_dir'];
+		$liveReleaseDir	 = $this->copyRelease($releaseDir, $rootDir, $release);
 
 		//run before deploy hooks
 		try {
@@ -149,16 +147,16 @@ class DeployManager extends \BaseManager
 		}
 
 		//symlink shared folders
-		$warnings = [];
-		$sharedDirsLinked = $this->linkSharedDirs($liveReleaseDir, $rootDir, $commands['sharedFolders']);
+		$warnings			 = [];
+		$sharedDirsLinked	 = $this->linkSharedDirs($liveReleaseDir, $rootDir, $commands['sharedFolders']);
 		if (!$sharedDirsLinked) {
-			$reason = 'Symlinking shared folders failed.';
-			$warnings[] = $reason;
+			$reason		 = 'Symlinking shared folders failed.';
+			$warnings[]	 = $reason;
 		}
 		$liveDeploySwitched = $this->switchLiveDeploy($liveReleaseDir, $rootDir);
 		if (!$liveDeploySwitched) {
-			$reason = 'Symlinking live deploy folder failed.';
-			$warnings[] = $reason;
+			$reason		 = 'Symlinking live deploy folder failed.';
+			$warnings[]	 = $reason;
 		}
 
 		//run after deploy hooks
@@ -166,8 +164,8 @@ class DeployManager extends \BaseManager
 			$this->output->writeln('<info>Running after deploy hooks</info>');
 			$this->runHooks($commands['afterDeployHooks'], $liveReleaseDir, $env);
 		} catch (DeployException $e) {
-			$reason = 'After deploy hooks failed';
-			$warnings[] = $reason;
+			$reason		 = 'After deploy hooks failed';
+			$warnings[]	 = $reason;
 			$this->output->writeln(sprintf('<error>%s</error>', $reason));
 			return;
 		}
@@ -235,13 +233,13 @@ class DeployManager extends \BaseManager
 	{
 		if (!empty($commands)) {
 			chdir($dir);
-			$output = [];
-			$returnVar = NULL;
+			$output		 = [];
+			$returnVar	 = NULL;
 			foreach ($commands as $command) {
 				$output = [];
 				$this->output->writeln($command);
 
-				$process = new Process($commandline = escapeshellcmd($command), $dir);
+				$process	 = new Process($commandline = escapeshellcmd($command), $dir);
 
 				//removes PATH
 				/*
@@ -265,11 +263,11 @@ class DeployManager extends \BaseManager
 
 	private function readLastCommitMessage(\Application $application, $branch)
 	{
-		$repositoryPath = $this->repostioriesDir . '/' . $application->getRepoName();
-		$output = [];
-		$returnVar = NULL;
-		$format = '--pretty=format:"%s" -n 1';
-		$command = sprintf('git log %s %s', $format, $branch);
+		$repositoryPath	 = $this->repostioriesDir . '/' . $application->getRepoName();
+		$output			 = [];
+		$returnVar		 = NULL;
+		$format			 = '--pretty=format:"%s" -n 1';
+		$command		 = sprintf('git log %s %s', $format, $branch);
 		chdir($repositoryPath);
 		exec($command, $output, $returnVar);
 
@@ -279,8 +277,8 @@ class DeployManager extends \BaseManager
 
 	private function prepareDeployFiles(\Application $application, $branch, $revision, $release)
 	{
-		$releaseDir = $this->releasesDir . '/' . $release->getNumber();
-		$repositoryPath = $this->repostioriesDir . '/' . $application->getRepoName();
+		$releaseDir		 = $this->releasesDir . '/' . $release->getNumber();
+		$repositoryPath	 = $this->repostioriesDir . '/' . $application->getRepoName();
 		$this->fs->mkdir($releaseDir);
 
 		try {
@@ -294,14 +292,14 @@ class DeployManager extends \BaseManager
 		chdir($releaseDir);
 
 		//checkout the desired branch or commit
-		$output = [];
-		$returnVar = NULL;
+		$output		 = [];
+		$returnVar	 = NULL;
 		exec(sprintf('git --git-dir=%s/.git --work-tree=%s checkout %s', $releaseDir, $releaseDir, escapeshellarg($revision)), $output, $returnVar);
 
 		//delete the .git direcotry
 		$this->fs->chmod('.git', 0777);
-		$output = [];
-		$returnVar = NULL;
+		$output		 = [];
+		$returnVar	 = NULL;
 		exec('rm -r -f .git 2>&1', $output, $returnVar);
 		if ($returnVar !== 0) {
 			$this->output->writeln('Could not remove .git folder. Falling back to stupid file copy.');
@@ -315,18 +313,18 @@ class DeployManager extends \BaseManager
 	{
 		$this->output->writeln('Parsing command file');
 
-		$sharedFolders = [];
-		$afterReceiveHooks = [];
-		$beforeDeployHooks = [];
-		$afterDeployHooks = [];
+		$sharedFolders		 = [];
+		$afterReceiveHooks	 = [];
+		$beforeDeployHooks	 = [];
+		$afterDeployHooks	 = [];
 
 		$commandFile = $releaseDir . '/deploy.neon';
 		if (!file_exists($commandFile)) {
 			$this->output->writeln('No command file found');
 		} else {
 
-			$neon = new \Nette\Utils\Neon;
-			$commands = $neon->decode(file_get_contents($commandFile));
+			$neon		 = new Neon;
+			$commands	 = $neon->decode(file_get_contents($commandFile));
 
 			if (isset($commands['shared_folders']) and is_array($commands['shared_folders'])) {
 				$sharedFolders = $commands['shared_folders'];
@@ -349,10 +347,10 @@ class DeployManager extends \BaseManager
 			}
 		}
 		return [
-			'sharedFolders' => $sharedFolders,
-			'afterReceiveHooks' => $afterReceiveHooks,
-			'beforeDeployHooks' => $beforeDeployHooks,
-			'afterDeployHooks' => $afterDeployHooks
+			'sharedFolders'		 => $sharedFolders,
+			'afterReceiveHooks'	 => $afterReceiveHooks,
+			'beforeDeployHooks'	 => $beforeDeployHooks,
+			'afterDeployHooks'	 => $afterDeployHooks
 		];
 	}
 
@@ -411,9 +409,9 @@ class DeployManager extends \BaseManager
 				$this->output->writeln(sprintf('<error>%s</error>', $e->getMessage()));
 				//maybe we're on windows
 				if (defined('PHP_WINDOWS_VERSION_MAJOR')) {
-					$output = [];
-					$returnVar = NULL;
-					$command = sprintf('mklink /D %s %s', escapeshellarg($dirName), escapeshellarg($originDir));
+					$output		 = [];
+					$returnVar	 = NULL;
+					$command	 = sprintf('mklink /D %s %s', escapeshellarg($dirName), escapeshellarg($originDir));
 					exec($command, $output, $returnVar);
 					if ($returnVar !== 0) {
 						$this->output->writeln(sprintf('<error>Cannot create symbolik link on windows. You need administrative privileges.</error>', $e->getMessage()));
@@ -434,14 +432,15 @@ class DeployManager extends \BaseManager
 		$success = TRUE;
 		try {
 			chdir($rootDir);
+			$this->fs->remove(['live']);
 			$this->fs->symlink($liveReleaseDir, 'live', TRUE);
 		} catch (IOException $e) {
 			$this->output->writeln(sprintf('<error>%s</error>', $e->getMessage()));
 			//maybe we're on windows
 			if (defined('PHP_WINDOWS_VERSION_MAJOR')) {
-				$output = [];
-				$returnVar = NULL;
-				$command = sprintf('mklink /D %s %s', escapeshellarg('live'), escapeshellarg($liveReleaseDir));
+				$output		 = [];
+				$returnVar	 = NULL;
+				$command	 = sprintf('mklink /D %s %s', escapeshellarg('live'), escapeshellarg($liveReleaseDir));
 				exec($command, $output, $returnVar);
 				if ($returnVar !== 0) {
 					$this->output->writeln(sprintf('<error>Cannot create symbolik link on windows. You need administrative privileges.</error>', $e->getMessage()));

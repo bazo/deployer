@@ -2,6 +2,7 @@
 
 namespace Console\Command;
 
+
 use Symfony\Component\Console;
 use Applications\DeployManager;
 use Applications\ApplicationManager;
@@ -22,17 +23,13 @@ class GitPostReceiveHook extends Console\Command\Command
 
 	/** @var IStorage */
 	private $cacheStorage;
-	
-	
-	/**
-	 * @param DeployManager $deployManager
-	 * @param ApplicationManager $applicationManager
-	 */
-	public function inject(DeployManager $deployManager, ApplicationManager $applicationManager, IStorage $cacheStorage)
+
+	function __construct(DeployManager $deployManager, ApplicationManager $applicationManager, IStorage $cacheStorage)
 	{
-		$this->deployManager = $deployManager;
-		$this->applicationManager = $applicationManager;
-		$this->cacheStorage = $cacheStorage;
+		parent::__construct();
+		$this->deployManager		 = $deployManager;
+		$this->applicationManager	 = $applicationManager;
+		$this->cacheStorage			 = $cacheStorage;
 	}
 
 
@@ -49,26 +46,25 @@ class GitPostReceiveHook extends Console\Command\Command
 
 	protected function execute(Console\Input\InputInterface $input, Console\Output\OutputInterface $output)
 	{
-		$repository = $input->getArgument('repository');
-		$oldrev = $input->getArgument('oldrev');
-		$newrev = $input->getArgument('newrev');
-		$refname = $input->getArgument('refname');
+		$repository	 = $input->getArgument('repository');
+		$oldrev		 = $input->getArgument('oldrev');
+		$newrev		 = $input->getArgument('newrev');
+		$refname	 = $input->getArgument('refname');
 
 		$branch = str_replace('refs/heads/', '', $refname);
-		
+
 		$application = $this->applicationManager->loadApplicationByRepoName($repository);
-		if($application === NULL) {
+		if ($application === NULL) {
 			$output->writeln(sprintf('<error>Cannot find application for repository %s</error>', $repository));
 			return;
 		}
-		
-		$cache = new \Nette\Caching\Cache($this->cacheStorage, 'commits');
-		$key = 'commits-'.$application->getId().'-'.$branch;
+
+		$cache	 = new \Nette\Caching\Cache($this->cacheStorage, 'commits');
+		$key	 = 'commits-' . $application->getId() . '-' . $branch;
 		$cache->remove($key);
-		
+
 		$this->deployManager->deployAutomatic($application, $branch, $newrev);
 	}
 
 
 }
-
