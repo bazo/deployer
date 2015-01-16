@@ -1,2 +1,23 @@
 {block tab}
 {control formDeployInstructions}
+
+<script>
+	$(function () {
+		$('textarea').keydown(function (e) {
+			if (e.which === 9 && !e.shiftKey && !e.ctrlKey && !e.altKey) { // TAB
+				if (e.target.setSelectionRange) { // non-IE
+					var start = e.target.selectionStart;
+					var top = e.target.scrollTop;
+					e.target.value = e.target.value.substring(0, start) + "\t" + e.target.value.substr(e.target.selectionEnd);
+					e.target.setSelectionRange(start + 1, start + 1);
+					e.target.focus();
+					e.target.scrollTop = top; // Firefox
+
+				} else if (e.target.createTextRange) { // ie
+					document.selection.createRange().text = "\t";
+				}
+				e.preventDefault();
+			}
+		});
+	});
+</script>

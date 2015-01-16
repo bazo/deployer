@@ -127,7 +127,10 @@ class ApplicationPresenter extends SecuredPresenter
 
 	public function renderInstructions()
 	{
-		$this['formDeployInstructions']->setDefaults(['instructions' => $this->application->getInstructions()]);
+		$instructions = $this->application->getInstructions();
+		if (!empty($instructions)) {
+			$this['formDeployInstructions']->setDefaults(['instructions' => $instructions]);
+		}
 	}
 
 
@@ -173,7 +176,15 @@ class ApplicationPresenter extends SecuredPresenter
 	{
 		$form = new Form;
 
-		$form->addTextArea('instructions', '');
+		$default = <<<NEON
+shared_folders:
+hooks:
+	after_receive:
+	before_deploy:
+	after_deploy:
+NEON;
+
+		$form->addTextArea('instructions', '')->setDefaultValue($default);
 
 		$form->addSubmit('btnSubmit');
 		$form->onSuccess[] = callback($this, 'formInstructionsSuccess');
@@ -184,9 +195,16 @@ class ApplicationPresenter extends SecuredPresenter
 
 	public function formInstructionsSuccess(Form $form)
 	{
-		$values	 = $form->getValues();
+		$values = $form->getValues();
 
-		$this->applicationManager->updateInstructions($this->application, $values->instructions);
+		$instructions = $values->instructions;
+
+		try {
+			\Nette\Neon\Neon::decode($instructions);
+		} catch (\Nette\Neon\Exception $e) {
+			$this->flash($e->getMessage(), 'error');
+		}
+		$this->applicationManager->updateInstructions($this->application, $instructions);
 
 		$this->redirect('this');
 	}

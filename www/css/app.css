@@ -1,104 +1,74 @@
-/* line 1, D:\www\commander\www\less\app.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/D\:\www\commander\www\less\app\.less}line{font-family:\000031}}
 .application {
   width: 23%;
   margin-right: 2%;
   float: left;
 }
-/* line 7, D:\www\commander\www\less\app.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/D\:\www\commander\www\less\app\.less}line{font-family:\000037}}
 #new-app-button {
   margin-right: 20px;
 }
-/* line 15, D:\www\commander\www\less\app.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/D\:\www\commander\www\less\app\.less}line{font-family:\0000315}}
 #releases .release .date {
   width: 140px;
 }
-/* line 19, D:\www\commander\www\less\app.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/D\:\www\commander\www\less\app\.less}line{font-family:\0000319}}
 #releases .release .number {
   width: 120px;
 }
-/* line 23, D:\www\commander\www\less\app.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/D\:\www\commander\www\less\app\.less}line{font-family:\0000323}}
 #releases .release .branch {
   width: 50px;
 }
-/* line 27, D:\www\commander\www\less\app.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/D\:\www\commander\www\less\app\.less}line{font-family:\0000327}}
 #releases .release .status {
   width: 50px;
 }
-/* line 31, D:\www\commander\www\less\app.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/D\:\www\commander\www\less\app\.less}line{font-family:\0000331}}
 #releases .release .actions {
   width: 120px;
 }
-/* line 39, D:\www\commander\www\less\app.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/D\:\www\commander\www\less\app\.less}line{font-family:\0000339}}
 #commits .date {
   font-size: 120%;
   border: none;
 }
-/* line 44, D:\www\commander\www\less\app.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/D\:\www\commander\www\less\app\.less}line{font-family:\0000344}}
 #commits .date:first-child td {
   border: none;
 }
-/* line 49, D:\www\commander\www\less\app.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/D\:\www\commander\www\less\app\.less}line{font-family:\0000349}}
 #commits .commit {
   font-size: 90%;
   padding: 15px;
 }
-/* line 52, D:\www\commander\www\less\app.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/D\:\www\commander\www\less\app\.less}line{font-family:\0000352}}
 #commits .commit .gravatar {
   vertical-align: middle;
 }
-/* line 58, D:\www\commander\www\less\app.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/D\:\www\commander\www\less\app\.less}line{font-family:\0000358}}
 #commits .commit .commit-message {
   width: 53%;
   font-weight: bold;
   vertical-align: middle;
 }
-/* line 62, D:\www\commander\www\less\app.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/D\:\www\commander\www\less\app\.less}line{font-family:\0000362}}
 #commits .commit .commit-message span {
   display: block;
 }
-/* line 67, D:\www\commander\www\less\app.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/D\:\www\commander\www\less\app\.less}line{font-family:\0000367}}
 #commits .commit .commit-info {
   vertical-align: middle;
   width: 35%;
 }
-/* line 70, D:\www\commander\www\less\app.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/D\:\www\commander\www\less\app\.less}line{font-family:\0000370}}
 #commits .commit .commit-info p {
   margin-bottom: 0;
 }
-/* line 75, D:\www\commander\www\less\app.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/D\:\www\commander\www\less\app\.less}line{font-family:\0000375}}
 #commits .commit .deploy-button {
   vertical-align: middle;
 }
-/* line 82, D:\www\commander\www\less\app.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/D\:\www\commander\www\less\app\.less}line{font-family:\0000382}}
 #deploys .accordion-group {
   border: none;
 }
-/* line 85, D:\www\commander\www\less\app.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/D\:\www\commander\www\less\app\.less}line{font-family:\0000385}}
 #deploys .accordion-group .accordion-toggle {
   padding: 0;
 }
-/* line 88, D:\www\commander\www\less\app.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/D\:\www\commander\www\less\app\.less}line{font-family:\0000388}}
 #deploys .accordion-group .accordion-toggle:hover,
 #deploys .accordion-group .accordion-toggle:focus {
   text-decoration: none;
   outline: none;
 }
+#frm-formDeployInstructions .controls {
+  margin: 0;
+}
+#frm-formDeployInstructions-instructions {
+  width: 100%;
+  min-height: 300px;
+}
+/*# sourceMappingURL=app.css.map */

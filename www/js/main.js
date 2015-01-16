@@ -42,6 +42,10 @@ var connection;
 
 function main() {
 
+	$.each(q, function(index, f) {
+		$(f);
+	});
+
 	var $deployToggle = $('#deploy-toggle');
 
 	var host = wamp.host !== null ? wamp.host : window.location.hostname;

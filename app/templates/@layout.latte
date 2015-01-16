@@ -22,6 +22,12 @@
 		  <script src="{$basePath}/js/html5shiv.js"></script>
 		<![endif]-->
 
+		<script>
+			var q = [], $ = function(f) {
+				q.push(f);
+					};
+		</script>
+
 		<!-- Fav and touch icons -->
 		{block head}{/block}
 
@@ -123,8 +129,6 @@
 			var userId = {$user->getId()};
 			var wamp = {$wamp};
 		</script>
-		{*<script src="http://autobahn.s3.amazonaws.com/js/autobahn.min.js"></script>*}
-		{*<script src="{$basePath}/vendor/autobahnjs/autobahn/autobahn.js"></script>*}
 		<script src="{$basePath}/js/autobahn.min.js"></script>
 		<script data-main="/js/main" src="{$basePath}/vendor/requirejs/require.js"></script>
 		{block scripts}
