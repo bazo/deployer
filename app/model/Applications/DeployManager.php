@@ -2,7 +2,6 @@
 
 namespace Applications;
 
-
 use Symfony\Component\Filesystem\Filesystem;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -14,6 +13,8 @@ use Nette\Utils\Strings;
 use Symfony\Component\Process\Process;
 use Nette\Neon\Neon;
 use Nette\Neon\Exception as NeonException;
+
+
 
 /**
  * Description of DeployManager
@@ -103,7 +104,10 @@ class DeployManager extends \BaseManager
 
 		$releaseDir = $this->prepareDeployFiles($application, $branch, $revision, $release);
 		try {
-			$commands = $this->parseCommandFile($releaseDir);
+			$appCommands	 = $this->parseCommands($application->getInstructions());
+			$localCommands	 = $this->parseCommandFile($releaseDir);
+
+			$commands = array_merge_recursive($appCommands, $localCommands);
 		} catch (NeonException $e) {
 			$reason = 'Unable to read command file, aborting. Reason: ' . $e->getMessage();
 			$this->releaseFail($release, $reason);
@@ -309,49 +313,62 @@ class DeployManager extends \BaseManager
 	}
 
 
-	private function parseCommandFile($releaseDir)
+	private function parseCommands($neon)
 	{
-		$this->output->writeln('Parsing command file');
-
 		$sharedFolders		 = [];
 		$afterReceiveHooks	 = [];
 		$beforeDeployHooks	 = [];
 		$afterDeployHooks	 = [];
 
-		$commandFile = $releaseDir . '/deploy.neon';
-		if (!file_exists($commandFile)) {
-			$this->output->writeln('No command file found');
-		} else {
+		$commands = Neon::decode($neon);
 
-			$neon		 = new Neon;
-			$commands	 = $neon->decode(file_get_contents($commandFile));
+		if (isset($commands['shared_folders']) and is_array($commands['shared_folders'])) {
+			$sharedFolders = $commands['shared_folders'];
+		}
 
-			if (isset($commands['shared_folders']) and is_array($commands['shared_folders'])) {
-				$sharedFolders = $commands['shared_folders'];
+		if (isset($commands['hooks'])) {
+			$hooks = $commands['hooks'];
+
+			if (isset($hooks['after_receive']) and is_array($hooks['after_receive'])) {
+				$afterReceiveHooks = $hooks['after_receive'];
 			}
 
-			if (isset($commands['hooks'])) {
-				$hooks = $commands['hooks'];
+			if (isset($hooks['before_deploy']) and is_array($hooks['before_deploy'])) {
+				$beforeDeployHooks = $hooks['before_deploy'];
+			}
 
-				if (isset($hooks['after_receive']) and is_array($hooks['after_receive'])) {
-					$afterReceiveHooks = $hooks['after_receive'];
-				}
-
-				if (isset($hooks['before_deploy']) and is_array($hooks['before_deploy'])) {
-					$beforeDeployHooks = $hooks['before_deploy'];
-				}
-
-				if (isset($hooks['after_deploy']) and is_array($hooks['after_deploy'])) {
-					$afterDeployHooks = $hooks['after_deploy'];
-				}
+			if (isset($hooks['after_deploy']) and is_array($hooks['after_deploy'])) {
+				$afterDeployHooks = $hooks['after_deploy'];
 			}
 		}
+
 		return [
 			'sharedFolders'		 => $sharedFolders,
 			'afterReceiveHooks'	 => $afterReceiveHooks,
 			'beforeDeployHooks'	 => $beforeDeployHooks,
 			'afterDeployHooks'	 => $afterDeployHooks
 		];
+	}
+
+
+	private function parseCommandFile($releaseDir)
+	{
+		$this->output->writeln('Parsing command file');
+
+		$commandFile = $releaseDir . '/deploy.neon';
+		if (!file_exists($commandFile)) {
+			$this->output->writeln('No command file found');
+
+			return [
+				'sharedFolders'		 => [],
+				'afterReceiveHooks'	 => [],
+				'beforeDeployHooks'	 => [],
+				'afterDeployHooks'	 => []
+			];
+		} else {
+			$neon = file_get_contents($commandFile);
+			return $this->parseCommands($neon);
+		}
 	}
 
 

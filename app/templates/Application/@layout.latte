@@ -28,6 +28,10 @@
 			<li n:class="$presenter->isLinkCurrent('commits') ? active">
 				<a n:href="commits"><i class="icon icon-code"></i> Commits</a>
 			</li>
+			<li n:class="$presenter->isLinkCurrent('instructions') ? active" >
+				<a n:href="instructions"><i class="icon icon-tasks"></i> Deploy instructions</a>
+			</li>
+
 			<li n:class="$presenter->isLinkCurrent('settings') ? active, pull-right" >
 				<a n:href="settings"><i class="icon icon-cog"></i> Settings</a>
 			</li>

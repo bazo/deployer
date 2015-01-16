@@ -10,6 +10,8 @@ use Symfony\Component\Filesystem\Exception\IOException;
 use GitWrapper\GitException;
 use Nette\Caching\IStorage;
 
+
+
 /**
  * Applications presenter.
  */
@@ -35,18 +37,18 @@ class ApplicationPresenter extends SecuredPresenter
 
 	public function __construct(GitManager $gitManager, DeployManager $deployManager, IStorage $cacheStorage)
 	{
-		$this->gitManager = $gitManager;
+		$this->gitManager	 = $gitManager;
 		$this->deployManager = $deployManager;
-		$this->cacheStorage = $cacheStorage;
+		$this->cacheStorage	 = $cacheStorage;
 	}
 
 
 	protected function startup()
 	{
 		parent::startup();
-		$this->repositoriesPath = $this->context->parameters['git']['repositories']['path'];
-		$id = $this->getParameter('id');
-		$this->application = $this->applicationManager->loadApplication($id);
+		$this->repositoriesPath	 = $this->context->parameters['git']['repositories']['path'];
+		$id						 = $this->getParameter('id');
+		$this->application		 = $this->applicationManager->loadApplication($id);
 
 		$activeBranch = $this->gitManager->getActiveBranch($this->application);
 	}
@@ -54,9 +56,10 @@ class ApplicationPresenter extends SecuredPresenter
 
 	public function renderRelease($release_id)
 	{
-		$release = $this->applicationManager->getRelease($this->application, $release_id);
+		$release				 = $this->applicationManager->getRelease($this->application, $release_id);
 		$this->template->release = $release;
 	}
+
 
 	public function renderReleases()
 	{
@@ -65,38 +68,41 @@ class ApplicationPresenter extends SecuredPresenter
 		$this->template->releaseHistory = $releaseHistory;
 	}
 
+
 	public function renderCommits()
 	{
-		$branches = $this->gitManager->loadBranches($this->application);
-		$selectedBranch = $this->getHttpRequest()->getCookie($this->user->getId().'-branch');
-		$selectedBranch = $selectedBranch !== NULL ? $selectedBranch : $branches[0];
+		$branches		 = $this->gitManager->loadBranches($this->application);
+		$selectedBranch	 = $this->getHttpRequest()->getCookie($this->user->getId() . '-branch');
+		$selectedBranch	 = $selectedBranch !== NULL ? $selectedBranch : $branches[0];
 
-		$cache = new \Nette\Caching\Cache($this->cacheStorage, 'commits');
-		$key = 'commits-'.$this->application->getId().'-'.$selectedBranch;
+		$cache	 = new \Nette\Caching\Cache($this->cacheStorage, 'commits');
+		$key	 = 'commits-' . $this->application->getId() . '-' . $selectedBranch;
 
 		$commitsByDate = $cache->load($key);
-		if($commitsByDate === NULL) {
+		if ($commitsByDate === NULL) {
 			$log = $this->gitManager->loadCommits($this->application, $selectedBranch);
 
 			$commitsByDate = [];
-			foreach($log as $commit) {
-				$date = date('Y-m-d', $commit['timestamp']);
-				$commitsByDate[$date][] = $commit;
+			foreach ($log as $commit) {
+				$date					 = date('Y-m-d', $commit['timestamp']);
+				$commitsByDate[$date][]	 = $commit;
 			}
 
 			$cache->save($key, $commitsByDate);
 		}
 
-		$this->template->commitsByDate = $commitsByDate;
-		$this->template->branches = $branches;
-		$this->template->selectedBranch = $selectedBranch;
+		$this->template->commitsByDate	 = $commitsByDate;
+		$this->template->branches		 = $branches;
+		$this->template->selectedBranch	 = $selectedBranch;
 	}
+
 
 	public function actionSettings()
 	{
 		$branchValues = $this->createBranchValues();
 		$this['formSettings']['auto_deploy_branch']->setItems($branchValues);
 	}
+
 
 	private function createBranchValues()
 	{
@@ -119,17 +125,23 @@ class ApplicationPresenter extends SecuredPresenter
 	}
 
 
+	public function renderInstructions()
+	{
+		$this['formDeployInstructions']->setDefaults(['instructions' => $this->application->getInstructions()]);
+	}
+
+
 	protected function beforeRender()
 	{
 		parent::beforeRender();
 		$this->template->application = $this->application;
 		$this->template->registerHelper('repoPath', callback($this, 'formatRepositoryName'));
-		$this->template->registerHelper('deployData', function(\Application $application, $branch, $commit){
+		$this->template->registerHelper('deployData', function(\Application $application, $branch, $commit) {
 			$data = [
-				'applicationId' => $application->getId(),
-				'branch' => $branch,
-				'commit' => $commit,
-				'userId' => $this->getUser()->getId()
+				'applicationId'	 => $application->getId(),
+				'branch'		 => $branch,
+				'commit'		 => $commit,
+				'userId'		 => $this->getUser()->getId()
 			];
 
 			return json_encode($data);
@@ -157,9 +169,32 @@ class ApplicationPresenter extends SecuredPresenter
 	}
 
 
+	protected function createComponentFormDeployInstructions()
+	{
+		$form = new Form;
+
+		$form->addTextArea('instructions', '');
+
+		$form->addSubmit('btnSubmit');
+		$form->onSuccess[] = callback($this, 'formInstructionsSuccess');
+
+		return $form;
+	}
+
+
+	public function formInstructionsSuccess(Form $form)
+	{
+		$values	 = $form->getValues();
+
+		$this->applicationManager->updateInstructions($this->application, $values->instructions);
+
+		$this->redirect('this');
+	}
+
+
 	public function formSettingsSuccess(Form $form)
 	{
-		$values = $form->getValues($asArray = TRUE);
+		$values	 = $form->getValues($asArray = TRUE);
 
 		$this->applicationManager->updateSettings($this->application, $values);
 		try {
@@ -209,13 +244,12 @@ class ApplicationPresenter extends SecuredPresenter
 		$this->redirect('this');
 	}
 
+
 	public function handleChangeBranch($branch)
 	{
-		$this->getHttpResponse()->setCookie($this->user->getId().'-branch', $branch, 2000000); //expire somewhere in far future
+		$this->getHttpResponse()->setCookie($this->user->getId() . '-branch', $branch, 2000000); //expire somewhere in far future
 		$this->redirect('this');
 	}
 
 
 }
-
-

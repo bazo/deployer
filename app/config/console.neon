@@ -29,7 +29,7 @@ services:
 
 	#helpers
 	dialog:
-		class: \Symfony\Component\Console\Helper\DialogHelper
+		class: Symfony\Component\Console\Helper\DialogHelper
 		tags: [console.helper]
 
 	progress:

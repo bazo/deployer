@@ -3,6 +3,8 @@
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Nette\Utils\Strings;
 
+
+
 /**
  * Application
  *
@@ -24,7 +26,7 @@ class Application
 	 * @ODM\Index(unique=true)
 	 */
 	private $name;
-	
+
 	/**
 	 * @var string
 	 * @ODM\String
@@ -33,53 +35,64 @@ class Application
 	private $repoName;
 
 	/**
-	 * @var array 
+	 * @var array
 	 * @ODM\Hash
 	 */
 	private $settings;
-	
+
+	/**
+	 * @var string
+	 * @ODM\String
+	 */
+	private $instructions;
+
 	/**
 	 * @ODM\ReferenceOne(targetDocument="Release")
 	 * @var Release
 	 */
 	private $currentRelease;
-	
+
 	/**
 	 * @param string $name
 	 */
 	public function __construct($name)
 	{
-		$this->name = $name;
-		$this->repoName = Strings::webalize($name);
-		$this->settings = [];
+		$this->name		 = $name;
+		$this->repoName	 = Strings::webalize($name);
+		$this->settings	 = [];
 	}
+
 
 	public function getId()
 	{
 		return $this->id;
 	}
 
+
 	public function getName()
 	{
 		return $this->name;
 	}
+
 
 	/**
 	 * @return array
 	 */
 	public function getSettings()
 	{
-		if($this->settings === NULL) {
+		if ($this->settings === NULL) {
 			return [];
 		}
 		return $this->settings;
 	}
+
 
 	public function getSetting($setting)
 	{
 		$settings = $this->getSettings();
 		return isset($settings[$setting]) ? $settings[$setting] : NULL;
 	}
+
 
 	/**
 	 * @param array $settings
@@ -90,22 +103,37 @@ class Application
 		$this->settings = $settings;
 		return $this;
 	}
-	
+
+
 	public function getRepoName()
 	{
 		return $this->repoName;
 	}
 
-	
+
 	public function setCurrentRelease(Release $currentRelease)
 	{
 		$this->currentRelease = $currentRelease;
 		return $this;
 	}
-	
+
+
 	public function getCurrentRelease()
 	{
 		return $this->currentRelease;
 	}
+
+
+	function getInstructions()
+	{
+		return $this->instructions;
+	}
+
+
+	function setInstructions($instructions)
+	{
+		$this->instructions = $instructions;
+	}
+
 
 }

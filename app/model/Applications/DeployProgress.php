@@ -6,6 +6,8 @@ use Kdyby\Redis\RedisClient;
 use \Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use WAMP\WAMPClient;
 
+
+
 /**
  * Description of DeployProgress
  *
@@ -22,34 +24,40 @@ class DeployProgress implements EventSubscriberInterface
 
 	public function __construct(RedisClient $redis, WAMPClient $wampClient)
 	{
-		$this->redis = $redis;
-		$this->wampClient = $wampClient;
+		$this->redis		 = $redis;
+		$this->wampClient	 = $wampClient;
 	}
 
 
 	public static function getSubscribedEvents()
 	{
 		return [
-			\Events\ApplicationEvents::DEPLOY_STARTED => [
+			\Events\ApplicationEvents::DEPLOY_STARTED	 => [
 				['onDeployStarted', 0]
 			],
-			\Events\ApplicationEvents::DEPLOY_FINISHED => [
+			\Events\ApplicationEvents::DEPLOY_FINISHED	 => [
 				['onDeployFinished', 0]
 			],
-			\Events\ConsoleEvents::MESSAGE_WRITE => [
+			\Events\ConsoleEvents::MESSAGE_WRITE		 => [
 				['onMessageWrite', 0]
 			],
 		];
 	}
 
+
 	private function connectWamp()
 	{
 		static $connected = FALSE;
-		if(!$connected) {
-			$this->wampClient->connect();
-			$connected = TRUE;
+		if (!$connected) {
+			try {
+				$this->wampClient->connect();
+				$connected = TRUE;
+			} catch (\RuntimeException $e) {
+				//connection failed
+			}
 		}
 	}
+
 
 	public function onDeployStarted(\Events\Application\DeployStarted $event)
 	{
@@ -67,8 +75,8 @@ class DeployProgress implements EventSubscriberInterface
 
 	public function onMessageWrite(\Events\Console\MessageWrite $event)
 	{
-		$applicationId = $event->getApplicationId();
-		$message = $event->getMessage();
+		$applicationId	 = $event->getApplicationId();
+		$message		 = $event->getMessage();
 		$this->addMessage($applicationId, $message);
 	}
 
@@ -87,45 +95,47 @@ class DeployProgress implements EventSubscriberInterface
 
 	public function addMessage($applicationId, $message)
 	{
-		$this->redis->rPush('messages:'.$applicationId, $message);
+		$this->redis->rPush('messages:' . $applicationId, $message);
 		return $this;
 	}
 
-	
+
 	public function isDeployRunning($applicationId)
 	{
 		return false;
 		return $this->redis->sIsMember('deploys', $applicationId);
 	}
 
+
 	public function listDeploys()
 	{
-		$deploys = $this->redis->sMembers('deploys');
-		$messages = [];
+		$deploys	 = $this->redis->sMembers('deploys');
+		$messages	 = [];
 		$this->redis->multi();
-		foreach($deploys as $applicationId) {
-			$this->redis->lRange('messages:'.$applicationId, 0, -1);
+		foreach ($deploys as $applicationId) {
+			$this->redis->lRange('messages:' . $applicationId, 0, -1);
 		}
 		$response = $this->redis->exec();
-		
-		foreach($deploys as $index => $applicationId) {
+
+		foreach ($deploys as $index => $applicationId) {
 			$messages[$applicationId] = $response[$index];
 		}
-		
+
 		return $messages;
 	}
 
-	
+
 	public function clearDeploys()
 	{
 		$deploys = $this->redis->sMembers('deploys');
 		$this->redis->multi();
-		foreach($deploys as $applicationId) {
+		foreach ($deploys as $applicationId) {
 			$this->redis->srem('deploys', $applicationId);
-			$this->redis->lTrim('messages:'.$applicationId, 1, 0);
+			$this->redis->lTrim('messages:' . $applicationId, 1, 0);
 		}
 		$this->redis->exec();
 	}
+
 
 	public function finishDeploy($applicationId)
 	{
@@ -136,10 +146,9 @@ class DeployProgress implements EventSubscriberInterface
 		$this->wampClient->publish('deploy-finish', $payload);
 		$this->redis->multi();
 		$this->redis->srem('deploys', $applicationId);
-		$this->redis->lTrim('messages:'.$applicationId, 1, 0);
+		$this->redis->lTrim('messages:' . $applicationId, 1, 0);
 		$this->redis->exec();
 	}
 
 
 }
-

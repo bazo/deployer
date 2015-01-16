@@ -20,7 +20,6 @@
 		"php": ">= 5.4.0",
 		"nette/nette": "@dev",
 		"ircmaxell/password-compat": "@dev",
-		"symfony/console": "@dev",
 		"symfony/event-dispatcher": "@dev",
 		"symfony/filesystem": "@dev",
 		"symfony/process": "@dev",
@@ -35,6 +34,13 @@
 		"bazo/git-wrapper": "@dev",
 		"guzzle/guzzle": "v3.6.0",
 		"cboden/Ratchet": "v0.2.7",
-		"bazo/wamp-client": "@dev"
-	}
+		"bazo/wamp-client": "@dev",
+		"symfony/console": "dev-master as 2.7.x-dev"
+	},
+	"repositories": [
+		{
+			"type": "vcs",
+			"url": "git@github.com:bazo/Console.git"
+		}
+	]
 }

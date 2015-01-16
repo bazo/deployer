@@ -94,4 +94,14 @@ class ApplicationManager extends \BaseManager
 	}
 
 
+	public function updateInstructions(\Application $application, $instructions)
+	{
+		$application->setInstructions($instructions);
+		$this->dm->persist($application);
+		$this->dm->flush();
+
+		return $application;
+	}
+
+
 }
