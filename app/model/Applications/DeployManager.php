@@ -2,6 +2,7 @@
 
 namespace Applications;
 
+
 use Symfony\Component\Filesystem\Filesystem;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -13,8 +14,6 @@ use Nette\Utils\Strings;
 use Symfony\Component\Process\Process;
 use Nette\Neon\Neon;
 use Nette\Neon\Exception as NeonException;
-
-
 
 /**
  * Description of DeployManager
@@ -320,28 +319,31 @@ class DeployManager extends \BaseManager
 		$beforeDeployHooks	 = [];
 		$afterDeployHooks	 = [];
 
-		$commands = Neon::decode($neon);
+		if (!empty($neon)) {
 
-		if (isset($commands['shared_folders']) and is_array($commands['shared_folders'])) {
-			$sharedFolders = $commands['shared_folders'];
+			$commands = Neon::decode($neon);
+
+			if (isset($commands['shared_folders']) and is_array($commands['shared_folders'])) {
+				$sharedFolders = $commands['shared_folders'];
+			}
+
+			if (isset($commands['hooks'])) {
+				$hooks = $commands['hooks'];
+
+				if (isset($hooks['after_receive']) and is_array($hooks['after_receive'])) {
+					$afterReceiveHooks = $hooks['after_receive'];
+				}
+
+				if (isset($hooks['before_deploy']) and is_array($hooks['before_deploy'])) {
+					$beforeDeployHooks = $hooks['before_deploy'];
+				}
+
+				if (isset($hooks['after_deploy']) and is_array($hooks['after_deploy'])) {
+					$afterDeployHooks = $hooks['after_deploy'];
+				}
+			}
 		}
-
-		if (isset($commands['hooks'])) {
-			$hooks = $commands['hooks'];
-
-			if (isset($hooks['after_receive']) and is_array($hooks['after_receive'])) {
-				$afterReceiveHooks = $hooks['after_receive'];
-			}
-
-			if (isset($hooks['before_deploy']) and is_array($hooks['before_deploy'])) {
-				$beforeDeployHooks = $hooks['before_deploy'];
-			}
-
-			if (isset($hooks['after_deploy']) and is_array($hooks['after_deploy'])) {
-				$afterDeployHooks = $hooks['after_deploy'];
-			}
-		}
-
+		
 		return [
 			'sharedFolders'		 => $sharedFolders,
 			'afterReceiveHooks'	 => $afterReceiveHooks,
