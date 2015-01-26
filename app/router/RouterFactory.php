@@ -23,7 +23,7 @@ class RouterFactory
 			'presenter' => 'Application',
 		]);
 		$router[] = new Route('<presenter>[/<action>][/<id>]', [
-			'presenter' => 'applications',
+			'presenter' => 'Applications',
 			'action' => 'default'
 		]);
 		return $router;
