@@ -19,7 +19,7 @@ class RouterFactory
 	{
 		$router = new RouteList();
 		$router[] = new Route('index.php', 'Applications:default', Route::ONE_WAY);
-		$router[] = new Route('application/<id>[/<action>][/<release_id>]', [
+		$router[] = new Route('application[/<action>][/<id>][/<release_id>]', [
 			'presenter' => 'Application',
 		]);
 		$router[] = new Route('<presenter>[/<action>][/<id>]', [
