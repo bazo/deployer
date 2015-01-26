@@ -18,13 +18,13 @@ class RouterFactory
 	public function createRouter()
 	{
 		$router = new RouteList();
-		$router[] = new Route('index.php', 'Applications:Default', Route::ONE_WAY);
+		$router[] = new Route('index.php', 'Applications:default', Route::ONE_WAY);
 		$router[] = new Route('application/<id>[/<action>][/<release_id>]', [
 			'presenter' => 'Application',
 		]);
 		$router[] = new Route('<presenter>[/<action>][/<id>]', [
-			'presenter' => 'Applications',
-			'action' => 'Default'
+			'presenter' => 'applications',
+			'action' => 'default'
 		]);
 		return $router;
 	}
