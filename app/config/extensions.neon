@@ -4,7 +4,7 @@ extensions:
 	- Bazo\Console\DI\ConsoleExtension
 	- Bazo\Mediator\DI\MediatorExtension
 	redis: Kdyby\Redis\DI\RedisExtension
-	#newrelic: Bazo\NewRelic\DI\NewRelicExtension
+	newrelic: Bazo\NewRelic\DI\NewRelicExtension
 
 db:
 	dbname: %db.name%
@@ -19,6 +19,6 @@ redis:
 	session: {database: 1}
 	debugger: off
 
-#newrelic:
-#	appName: Deployer
-#	useLogger: FALSE
+newrelic:
+	appName: Deployer
+	useLogger: FALSE
