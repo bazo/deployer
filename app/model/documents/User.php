@@ -19,14 +19,14 @@ class User implements Nette\Security\IIdentity
 
 	/**
 	 * @var string
-	 * @ODM\String
+	 * @ODM\Field(type="string")
 	 * @ODM\Index(unique=true)
 	 */
 	private $login;
 
 	/**
 	 * @var string
-	 * @ODM\String
+	 * @ODM\Field(type="string")
 	 */
 	private $password;
 

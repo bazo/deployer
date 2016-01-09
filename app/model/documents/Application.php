@@ -22,14 +22,14 @@ class Application
 
 	/**
 	 * @var string
-	 * @ODM\String
+	 * @ODM\Field(type="string")
 	 * @ODM\Index(unique=true)
 	 */
 	private $name;
 
 	/**
 	 * @var string
-	 * @ODM\String
+	 * @ODM\Field(type="string")
 	 * @ODM\Index(unique=true)
 	 */
 	private $repoName;
@@ -42,7 +42,7 @@ class Application
 
 	/**
 	 * @var string
-	 * @ODM\String
+	 * @ODM\Field(type="string")
 	 */
 	private $instructions;
 

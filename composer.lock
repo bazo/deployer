@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "ab903bce2f2d3107238caffcb039792c",
+    "hash": "091e3cd430e7b3e75bedd8c4f1b46197",
     "content-hash": "4ae2a53899568be651d6e3f470aa0505",
     "packages": [
         {
@@ -497,29 +497,28 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/cache.git",
-                "reference": "bc23e0f46da064cbc53c1b1243472477487ef754"
+                "reference": "e0ef9e9833ca024d251e77e8d82a00ca92b0aa71"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/doctrine/cache/zipball/e0ef9e9833ca024d251e77e8d82a00ca92b0aa71",
-                "reference": "bc23e0f46da064cbc53c1b1243472477487ef754",
+                "reference": "e0ef9e9833ca024d251e77e8d82a00ca92b0aa71",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.2"
+                "php": "~5.5|~7.0"
             },
             "conflict": {
                 "doctrine/common": ">2.2,<2.4"
             },
             "require-dev": {
-                "phpunit/phpunit": ">=3.7",
-                "predis/predis": "~1.0",
-                "satooshi/php-coveralls": "~0.6"
+                "phpunit/phpunit": "~4.8|~5.0",
+                "predis/predis": "~1.0"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.6.x-dev"
+                    "dev-master": "1.7.x-dev"
                 }
             },
             "autoload": {
@@ -559,7 +558,7 @@
                 "cache",
                 "caching"
             ],
-            "time": "2015-12-19 04:57:29"
+            "time": "2016-01-07 23:41:52"
         },
         {
             "name": "doctrine/collections",
@@ -633,12 +632,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/common.git",
-                "reference": "6065c0756da7dc286b8221107ade4c70298b1eba"
+                "reference": "773c56e51fc26ae07a47146fae31b320dd6cada3"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/doctrine/common/zipball/773c56e51fc26ae07a47146fae31b320dd6cada3",
-                "reference": "6065c0756da7dc286b8221107ade4c70298b1eba",
+                "reference": "773c56e51fc26ae07a47146fae31b320dd6cada3",
                 "shasum": ""
             },
             "require": {
@@ -698,7 +697,7 @@
                 "persistence",
                 "spl"
             ],
-            "time": "2015-12-04 13:08:02"
+            "time": "2015-12-26 08:54:38"
         },
         {
             "name": "doctrine/inflector",
@@ -881,12 +880,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/mongodb.git",
-                "reference": "3cbdae29a667f69cb5fc11e8a27427d8523ef00d"
+                "reference": "7b4d519bdf28289a49545ee804fb62ed99ddd1b2"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/doctrine/mongodb/zipball/7b4d519bdf28289a49545ee804fb62ed99ddd1b2",
-                "reference": "3cbdae29a667f69cb5fc11e8a27427d8523ef00d",
+                "reference": "7b4d519bdf28289a49545ee804fb62ed99ddd1b2",
                 "shasum": ""
             },
             "require": {
@@ -895,7 +894,8 @@
                 "php": "^5.5"
             },
             "require-dev": {
-                "jmikola/geojson": "^1.0"
+                "jmikola/geojson": "^1.0",
+                "phpunit/phpunit": "~4.8|~5.0"
             },
             "suggest": {
                 "jmikola/geojson": "Support GeoJSON geometry objects in 2dsphere queries"
@@ -948,7 +948,7 @@
                 "mongodb",
                 "persistence"
             ],
-            "time": "2015-12-15 06:33:18"
+            "time": "2016-01-06 08:28:23"
         },
         {
             "name": "doctrine/mongodb-odm",
@@ -956,12 +956,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/mongodb-odm.git",
-                "reference": "ecdbd7bfd5e5345193d3c84494ea96e36f619156"
+                "reference": "6f10661a6500f4cfbc957f105f43cb2e4b3af3ae"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/doctrine/mongodb-odm/zipball/6f10661a6500f4cfbc957f105f43cb2e4b3af3ae",
-                "reference": "ecdbd7bfd5e5345193d3c84494ea96e36f619156",
+                "reference": "6f10661a6500f4cfbc957f105f43cb2e4b3af3ae",
                 "shasum": ""
             },
             "require": {
@@ -1032,7 +1032,7 @@
                 "odm",
                 "persistence"
             ],
-            "time": "2015-12-23 17:49:18"
+            "time": "2016-01-08 10:15:20"
         },
         {
             "name": "evenement/evenement",
@@ -1918,12 +1918,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nette/di.git",
-                "reference": "f205c2cbcb19e361950a11cc88d1e1f4cd95a47d"
+                "reference": "6437cc9bef456343142b6706e9bcf51512eb248e"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/nette/di/zipball/6437cc9bef456343142b6706e9bcf51512eb248e",
-                "reference": "f205c2cbcb19e361950a11cc88d1e1f4cd95a47d",
+                "reference": "6437cc9bef456343142b6706e9bcf51512eb248e",
                 "shasum": ""
             },
             "require": {
@@ -1967,7 +1967,7 @@
             ],
             "description": "Nette Dependency Injection Component",
             "homepage": "https://nette.org",
-            "time": "2015-12-03 15:38:17"
+            "time": "2015-12-28 10:47:15"
         },
         {
             "name": "nette/finder",
@@ -2090,12 +2090,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nette/http.git",
-                "reference": "385064a2ccabb141103e4785fa0a3969a07dfe25"
+                "reference": "8fff6ee824e2d6bc1e1a1707362205c41b4e2bad"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/nette/http/zipball/8fff6ee824e2d6bc1e1a1707362205c41b4e2bad",
-                "reference": "385064a2ccabb141103e4785fa0a3969a07dfe25",
+                "reference": "8fff6ee824e2d6bc1e1a1707362205c41b4e2bad",
                 "shasum": ""
             },
             "require": {
@@ -2141,7 +2141,7 @@
             ],
             "description": "Nette HTTP Component",
             "homepage": "https://nette.org",
-            "time": "2015-11-29 21:49:50"
+            "time": "2016-01-08 23:45:40"
         },
         {
             "name": "nette/mail",
@@ -2733,12 +2733,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/log.git",
-                "reference": "9e45edca52cc9c954680072c93e621f8b71fab26"
+                "reference": "d8e60a5619fff77f9669da8997697443ef1a1d7e"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/php-fig/log/zipball/d8e60a5619fff77f9669da8997697443ef1a1d7e",
-                "reference": "9e45edca52cc9c954680072c93e621f8b71fab26",
+                "reference": "d8e60a5619fff77f9669da8997697443ef1a1d7e",
                 "shasum": ""
             },
             "require": {
@@ -2766,12 +2766,13 @@
                 }
             ],
             "description": "Common interface for logging libraries",
+            "homepage": "https://github.com/php-fig/log",
             "keywords": [
                 "log",
                 "psr",
                 "psr-3"
             ],
-            "time": "2015-06-02 13:48:41"
+            "time": "2016-01-06 21:40:42"
         },
         {
             "name": "react/event-loop",
@@ -2780,12 +2781,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/reactphp/event-loop.git",
-                "reference": "134b94dc555d320bd31253a215c8a65ef151a79a"
+                "reference": "bf8f09df7d8abb4a481771e64716c94178b13904"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/reactphp/event-loop/zipball/134b94dc555d320bd31253a215c8a65ef151a79a",
-                "reference": "134b94dc555d320bd31253a215c8a65ef151a79a",
+                "reference": "bf8f09df7d8abb4a481771e64716c94178b13904",
                 "shasum": ""
             },
             "require": {
@@ -2968,12 +2969,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/event-dispatcher.git",
-                "reference": "ae978c6a5289e42111b2fadd38fb0b53f772cd66"
+                "reference": "39d7e41f5654fdbb1863aff03ee6c6db961bc795"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/39d7e41f5654fdbb1863aff03ee6c6db961bc795",
-                "reference": "ae978c6a5289e42111b2fadd38fb0b53f772cd66",
+                "reference": "39d7e41f5654fdbb1863aff03ee6c6db961bc795",
                 "shasum": ""
             },
             "require": {
@@ -3020,7 +3021,7 @@
             ],
             "description": "Symfony EventDispatcher Component",
             "homepage": "https://symfony.com",
-            "time": "2015-11-30 21:39:17"
+            "time": "2016-01-03 15:35:40"
         },
         {
             "name": "symfony/filesystem",
@@ -3028,12 +3029,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/filesystem.git",
-                "reference": "c048e697f0c1212bda12c13e90af8e4d3dbb4ef0"
+                "reference": "111fe092914e044b4e40410fbcd488339948ddc7"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/filesystem/zipball/111fe092914e044b4e40410fbcd488339948ddc7",
-                "reference": "c048e697f0c1212bda12c13e90af8e4d3dbb4ef0",
+                "reference": "111fe092914e044b4e40410fbcd488339948ddc7",
                 "shasum": ""
             },
             "require": {
@@ -3069,11 +3070,11 @@
             ],
             "description": "Symfony Filesystem Component",
             "homepage": "https://symfony.com",
-            "time": "2015-12-22 10:39:31"
+            "time": "2016-01-07 13:39:00"
         },
         {
             "name": "symfony/http-foundation",
-            "version": "2.8.x-dev",
+            "version": "v2.8.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-foundation.git",
@@ -3081,7 +3082,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/39ae2f143da2a7bcb6e24db6d96b52bca86f14fd",
+                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/dc5172ce2d01965f50b6c51bccc5ae243709b3c2",
                 "reference": "dc5172ce2d01965f50b6c51bccc5ae243709b3c2",
                 "shasum": ""
             },
@@ -3130,12 +3131,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-php54.git",
-                "reference": "2c9f6d98eb30dc04fe0b06f9cc92a55acea5bdcc"
+                "reference": "8c815426034841705584d17a1a21f67193926a1a"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/polyfill-php54/zipball/8c815426034841705584d17a1a21f67193926a1a",
-                "reference": "2c9f6d98eb30dc04fe0b06f9cc92a55acea5bdcc",
+                "reference": "8c815426034841705584d17a1a21f67193926a1a",
                 "shasum": ""
             },
             "require": {
@@ -3180,7 +3181,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2015-11-04 20:28:58"
+            "time": "2016-01-01 11:06:21"
         },
         {
             "name": "symfony/process",
@@ -3188,12 +3189,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/process.git",
-                "reference": "a631eed21154d6b176995c49646842f73000f7db"
+                "reference": "1cba8f04eb0a9e38184a8003e927a5fb2d62158a"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/process/zipball/1cba8f04eb0a9e38184a8003e927a5fb2d62158a",
-                "reference": "a631eed21154d6b176995c49646842f73000f7db",
+                "reference": "1cba8f04eb0a9e38184a8003e927a5fb2d62158a",
                 "shasum": ""
             },
             "require": {
@@ -3229,7 +3230,7 @@
             ],
             "description": "Symfony Process Component",
             "homepage": "https://symfony.com",
-            "time": "2015-12-23 11:04:13"
+            "time": "2016-01-06 10:01:46"
         },
         {
             "name": "tracy/tracy",

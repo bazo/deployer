@@ -30,7 +30,7 @@ class Release
 	private $date;
 
 	/**
-	 * @ODM\String
+	 * @ODM\Field(type="string")
 	 * @ODM\Index(order="desc")
 	 * @var string
 	 */
@@ -43,38 +43,38 @@ class Release
 	private $application;
 
 	/**
-	 * @ODM\String
+	 * @ODM\Field(type="string")
 	 * @var string
 	 */
 	private $status;
 
 	/**
-	 * @ODM\String
+	 * @ODM\Field(type="string")
 	 * @var string
 	 */
 	private $branch;
 
 	/**
-	 * @ODM\String
+	 * @ODM\Field(type="string")
 	 * @ODM\Index
 	 * @var string
 	 */
 	private $commit;
 
 	/**
-	 * @ODM\String
+	 * @ODM\Field(type="string")
 	 * @var string
 	 */
 	private $message;
 
 	/**
-	 * @ODM\String
+	 * @ODM\Field(type="string")
 	 * @var string
 	 */
 	private $commitMessage;
 
 	/**
-	 * @ODM\String
+	 * @ODM\Field(type="string")
 	 * @var string
 	 */
 	private $deployOutput;
