@@ -1,7 +1,8 @@
 !.gitignore
 !.htaccess
 !web.config
-vendor
+/vendor
+!www/vendor/
 app/config/config.neon
 app/config/environment
 app/config/debug

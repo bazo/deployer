@@ -28,7 +28,6 @@
 		"bazo/nette-console-extension": "@dev",
 		"bazo/nette-monolog-extension": "@dev",
 		"bazo/nette-mediator-extension": "@dev",
-		"kdyby/bootstrap-form-renderer": "@dev",
 		"bazo/nette-newrelic-extension": "dev-master",
 		"kdyby/redis": "@dev",
 		"bazo/git-wrapper": "@dev",
