@@ -13,19 +13,19 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/alcaeus/mongo-php-adapter.git",
-                "reference": "677a25b65a041ded7648f9e66b308f1a51e1c60d"
+                "reference": "87acb38369c77e916dda95e3903e87197b5a6703"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alcaeus/mongo-php-adapter/zipball/677a25b65a041ded7648f9e66b308f1a51e1c60d",
-                "reference": "677a25b65a041ded7648f9e66b308f1a51e1c60d",
+                "url": "https://api.github.com/repos/alcaeus/mongo-php-adapter/zipball/87acb38369c77e916dda95e3903e87197b5a6703",
+                "reference": "87acb38369c77e916dda95e3903e87197b5a6703",
                 "shasum": ""
             },
             "require": {
                 "mongodb/mongodb": "1.0.0-beta2",
                 "php": "^5.5 || ^7.0"
             },
-            "replace": {
+            "provide": {
                 "ext-mongo": "1.6.12"
             },
             "require-dev": {
@@ -65,7 +65,7 @@
                 "database",
                 "mongodb"
             ],
-            "time": "2016-01-09 14:57:13"
+            "time": "2016-01-09 17:35:19"
         },
         {
             "name": "bazo/git-wrapper",
