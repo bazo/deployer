@@ -16,7 +16,6 @@ class Form extends BaseForm
 	public function __construct(\Nette\ComponentModel\IContainer $parent = NULL, $name = NULL)
 	{
 		parent::__construct($parent, $name);
-		$this->setRenderer(new BootstrapRenderer);
 		
 	}
 }
