@@ -48,11 +48,11 @@
 					<div n:if="$user->isLoggedIn()">
 						<div class="nav-collapse collapse">
 							<ul class="nav">
-								<li n:class="($presenter->isLinkCurrent('applications:*') or $presenter->isLinkCurrent('application:*')) ? active">
-									<a n:href="applications:"><i class="icon icon-dashboard"></i> Applications</a>
+								<li n:class="($presenter->isLinkCurrent('Applications:*') or $presenter->isLinkCurrent('Application:*')) ? active">
+									<a n:href="Applications:"><i class="icon icon-dashboard"></i> Applications</a>
 								</li>
-								<li n:class="$presenter->isLinkCurrent('settings:') ? active, pull-right">
-									<a n:href="settings:"><i class="icon icon-cogs"></i> Settings</a>
+								<li n:class="$presenter->isLinkCurrent('Settings:') ? active, pull-right">
+									<a n:href="Settings:"><i class="icon icon-cogs"></i> Settings</a>
 								</li>
 							</ul>
 						</div><!--/.nav-collapse -->
@@ -63,7 +63,7 @@
 								<span class="caret"></span>
 							</a>
 							<ul class="dropdown-menu">
-								<li><a n:href="logout">Sign Out</a></li>
+								<li><a n:href="Logout">Sign Out</a></li>
 							</ul>
 						</div>
 

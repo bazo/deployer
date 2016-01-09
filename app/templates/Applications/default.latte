@@ -13,7 +13,7 @@
 
 {define #application}
 <div class="well application">
-	<h2><a n:href="application:releases id => $application->getId()">{$application->getName()}</a></h2>
+	<h2><a n:href="Application:Releases id => $application->getId()">{$application->getName()}</a></h2>
 	<strong>Repository path:</strong> {$application|repoPath}
 </div>
 {/}
