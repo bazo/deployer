@@ -4,9 +4,69 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "42788ed2097b890e5a3cc352a1dd2419",
-    "content-hash": "9fa34db11ac70a64a39134423e82f1da",
+    "hash": "ab903bce2f2d3107238caffcb039792c",
+    "content-hash": "4ae2a53899568be651d6e3f470aa0505",
     "packages": [
+        {
+            "name": "alcaeus/mongo-php-adapter",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/alcaeus/mongo-php-adapter.git",
+                "reference": "677a25b65a041ded7648f9e66b308f1a51e1c60d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/alcaeus/mongo-php-adapter/zipball/677a25b65a041ded7648f9e66b308f1a51e1c60d",
+                "reference": "677a25b65a041ded7648f9e66b308f1a51e1c60d",
+                "shasum": ""
+            },
+            "require": {
+                "mongodb/mongodb": "1.0.0-beta2",
+                "php": "^5.5 || ^7.0"
+            },
+            "replace": {
+                "ext-mongo": "1.6.12"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8 || ^5.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "": "lib/Mongo",
+                    "Alcaeus\\MongoDbAdapter\\": "lib/Alcaeus/MongoDbAdapter"
+                },
+                "files": [
+                    "lib/Mongo/functions.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "alcaeus",
+                    "email": "alcaeus@alcaeus.org"
+                },
+                {
+                    "name": "Olivier Lechevalier",
+                    "email": "olivier.lechevalier@gmail.com"
+                }
+            ],
+            "description": "Adapter to provide ext-mongo interface on top of mongo-php-libary",
+            "keywords": [
+                "database",
+                "mongodb"
+            ],
+            "time": "2016-01-09 14:57:13"
+        },
         {
             "name": "bazo/git-wrapper",
             "version": "dev-master",
@@ -441,7 +501,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/cache/zipball/bc23e0f46da064cbc53c1b1243472477487ef754",
+                "url": "https://api.github.com/repos/doctrine/cache/zipball/e0ef9e9833ca024d251e77e8d82a00ca92b0aa71",
                 "reference": "bc23e0f46da064cbc53c1b1243472477487ef754",
                 "shasum": ""
             },
@@ -577,7 +637,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/common/zipball/6065c0756da7dc286b8221107ade4c70298b1eba",
+                "url": "https://api.github.com/repos/doctrine/common/zipball/773c56e51fc26ae07a47146fae31b320dd6cada3",
                 "reference": "6065c0756da7dc286b8221107ade4c70298b1eba",
                 "shasum": ""
             },
@@ -825,7 +885,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/mongodb/zipball/3cbdae29a667f69cb5fc11e8a27427d8523ef00d",
+                "url": "https://api.github.com/repos/doctrine/mongodb/zipball/7b4d519bdf28289a49545ee804fb62ed99ddd1b2",
                 "reference": "3cbdae29a667f69cb5fc11e8a27427d8523ef00d",
                 "shasum": ""
             },
@@ -900,7 +960,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/mongodb-odm/zipball/ecdbd7bfd5e5345193d3c84494ea96e36f619156",
+                "url": "https://api.github.com/repos/doctrine/mongodb-odm/zipball/6f10661a6500f4cfbc957f105f43cb2e4b3af3ae",
                 "reference": "ecdbd7bfd5e5345193d3c84494ea96e36f619156",
                 "shasum": ""
             },
@@ -1350,6 +1410,66 @@
             "time": "2015-12-14 10:22:11"
         },
         {
+            "name": "mongodb/mongodb",
+            "version": "1.0.0-beta2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mongodb/mongo-php-library.git",
+                "reference": "e8177e87efe74437b812915887d416f5b68b4e30"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mongodb/mongo-php-library/zipball/e8177e87efe74437b812915887d416f5b68b4e30",
+                "reference": "e8177e87efe74437b812915887d416f5b68b4e30",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mongodb": "^1.1.1",
+                "php": ">=5.4"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "MongoDB\\": "src/"
+                },
+                "files": [
+                    "src/functions.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Jeremy Mikola",
+                    "email": "jmikola@gmail.com"
+                },
+                {
+                    "name": "Hannes Magnusson",
+                    "email": "bjori@mongodb.com"
+                },
+                {
+                    "name": "Derick Rethans",
+                    "email": "github@derickrethans.nl"
+                }
+            ],
+            "description": "MongoDB driver library",
+            "homepage": "https://jira.mongodb.org/browse/PHPLIB",
+            "keywords": [
+                "database",
+                "driver",
+                "mongodb",
+                "persistence"
+            ],
+            "time": "2015-12-28 19:40:56"
+        },
+        {
             "name": "monolog/monolog",
             "version": "dev-master",
             "source": {
@@ -1566,35 +1686,35 @@
         },
         {
             "name": "nette/caching",
-            "version": "dev-master",
+            "version": "2.4.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nette/caching.git",
-                "reference": "ae991224eea00b9a1ddc3ac384f2896fd9ac2648"
+                "reference": "a2293a7dab07036b606938923cd9ee10c4bbba69"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nette/caching/zipball/ae991224eea00b9a1ddc3ac384f2896fd9ac2648",
-                "reference": "ae991224eea00b9a1ddc3ac384f2896fd9ac2648",
+                "url": "https://api.github.com/repos/nette/caching/zipball/a2293a7dab07036b606938923cd9ee10c4bbba69",
+                "reference": "a2293a7dab07036b606938923cd9ee10c4bbba69",
                 "shasum": ""
             },
             "require": {
                 "nette/finder": "~2.2",
                 "nette/utils": "~2.2",
-                "php": ">=5.6.0"
+                "php": ">=5.4.4"
             },
             "conflict": {
                 "nette/nette": "<2.2"
             },
             "require-dev": {
-                "latte/latte": "~2.4",
+                "latte/latte": "~2.3.0",
                 "nette/di": "~2.3",
                 "nette/tester": "~1.6"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.0-dev"
+                    "dev-master": "2.4-dev"
                 }
             },
             "autoload": {
@@ -1620,7 +1740,7 @@
             ],
             "description": "Nette Caching Component",
             "homepage": "https://nette.org",
-            "time": "2015-12-02 23:36:44"
+            "time": "2015-12-02 23:42:21"
         },
         {
             "name": "nette/component-model",
@@ -1802,7 +1922,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nette/di/zipball/f205c2cbcb19e361950a11cc88d1e1f4cd95a47d",
+                "url": "https://api.github.com/repos/nette/di/zipball/6437cc9bef456343142b6706e9bcf51512eb248e",
                 "reference": "f205c2cbcb19e361950a11cc88d1e1f4cd95a47d",
                 "shasum": ""
             },
@@ -1974,7 +2094,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nette/http/zipball/385064a2ccabb141103e4785fa0a3969a07dfe25",
+                "url": "https://api.github.com/repos/nette/http/zipball/8fff6ee824e2d6bc1e1a1707362205c41b4e2bad",
                 "reference": "385064a2ccabb141103e4785fa0a3969a07dfe25",
                 "shasum": ""
             },
@@ -2617,7 +2737,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/log/zipball/9e45edca52cc9c954680072c93e621f8b71fab26",
+                "url": "https://api.github.com/repos/php-fig/log/zipball/d8e60a5619fff77f9669da8997697443ef1a1d7e",
                 "reference": "9e45edca52cc9c954680072c93e621f8b71fab26",
                 "shasum": ""
             },
@@ -2660,12 +2780,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/reactphp/event-loop.git",
-                "reference": "bf8f09df7d8abb4a481771e64716c94178b13904"
+                "reference": "134b94dc555d320bd31253a215c8a65ef151a79a"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/reactphp/event-loop/zipball/134b94dc555d320bd31253a215c8a65ef151a79a",
-                "reference": "bf8f09df7d8abb4a481771e64716c94178b13904",
+                "reference": "134b94dc555d320bd31253a215c8a65ef151a79a",
                 "shasum": ""
             },
             "require": {
@@ -2852,7 +2972,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/ae978c6a5289e42111b2fadd38fb0b53f772cd66",
+                "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/39d7e41f5654fdbb1863aff03ee6c6db961bc795",
                 "reference": "ae978c6a5289e42111b2fadd38fb0b53f772cd66",
                 "shasum": ""
             },
@@ -2912,7 +3032,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/filesystem/zipball/c048e697f0c1212bda12c13e90af8e4d3dbb4ef0",
+                "url": "https://api.github.com/repos/symfony/filesystem/zipball/111fe092914e044b4e40410fbcd488339948ddc7",
                 "reference": "c048e697f0c1212bda12c13e90af8e4d3dbb4ef0",
                 "shasum": ""
             },
@@ -2961,7 +3081,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/dc5172ce2d01965f50b6c51bccc5ae243709b3c2",
+                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/39ae2f143da2a7bcb6e24db6d96b52bca86f14fd",
                 "reference": "dc5172ce2d01965f50b6c51bccc5ae243709b3c2",
                 "shasum": ""
             },
@@ -3014,7 +3134,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-php54/zipball/2c9f6d98eb30dc04fe0b06f9cc92a55acea5bdcc",
+                "url": "https://api.github.com/repos/symfony/polyfill-php54/zipball/8c815426034841705584d17a1a21f67193926a1a",
                 "reference": "2c9f6d98eb30dc04fe0b06f9cc92a55acea5bdcc",
                 "shasum": ""
             },
@@ -3072,7 +3192,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/process/zipball/a631eed21154d6b176995c49646842f73000f7db",
+                "url": "https://api.github.com/repos/symfony/process/zipball/1cba8f04eb0a9e38184a8003e927a5fb2d62158a",
                 "reference": "a631eed21154d6b176995c49646842f73000f7db",
                 "shasum": ""
             },
@@ -3198,7 +3318,8 @@
         "kdyby/redis": 20,
         "bazo/git-wrapper": 20,
         "bazo/wamp-client": 20,
-        "symfony/console": 20
+        "symfony/console": 20,
+        "alcaeus/mongo-php-adapter": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
