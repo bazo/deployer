@@ -138,7 +138,7 @@ class ApplicationPresenter extends SecuredPresenter
 	{
 		parent::beforeRender();
 		$this->template->application = $this->application;
-		$this->template->registerHelper('repoPath', callback($this, 'formatRepositoryName'));
+		$this->template->registerHelper('repoPath', [$this, 'formatRepositoryName']);
 		$this->template->registerHelper('deployData', function(\Application $application, $branch, $commit) {
 			$data = [
 				'applicationId'	 => $application->getId(),
@@ -166,7 +166,7 @@ class ApplicationPresenter extends SecuredPresenter
 		$form->addCheckbox('auto_deploy', 'Auto deploy'); //->addCondition(Form::FILLED)->toggle('auto_deploy');
 		$form->addSelect('auto_deploy_branch', 'Auto deploy branch');
 		$form->addSubmit('btnSubmit');
-		$form->onSuccess[] = callback($this, 'formSettingsSuccess');
+		$form->onSuccess[] = [$this, 'formSettingsSuccess'];
 
 		return $form;
 	}
@@ -187,7 +187,7 @@ NEON;
 		$form->addTextArea('instructions', '')->setDefaultValue($default);
 
 		$form->addSubmit('btnSubmit');
-		$form->onSuccess[] = callback($this, 'formInstructionsSuccess');
+		$form->onSuccess[] = [$this, 'formInstructionsSuccess'];
 
 		return $form;
 	}

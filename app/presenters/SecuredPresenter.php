@@ -51,7 +51,7 @@ class SecuredPresenter extends BasePresenter
 		$form->addText('name', 'Name');
 		$form->addSubmit('btnSubmit', 'Add');
 
-		$form->onSuccess[] = callback($this, 'formAddApplicationSuccess');
+		$form->onSuccess[] = [$this, 'formAddApplicationSuccess'];
 
 		return $form;
 	}

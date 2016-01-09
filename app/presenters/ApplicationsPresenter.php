@@ -29,7 +29,7 @@ class ApplicationsPresenter extends SecuredPresenter
 	{
 		parent::beforeRender();
 
-		$this->template->registerHelper('repoPath', callback($this, 'formatRepositoryName'));
+		$this->template->registerHelper('repoPath', [$this, 'formatRepositoryName']);
 	}
 
 
