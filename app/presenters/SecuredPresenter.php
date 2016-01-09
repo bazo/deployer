@@ -32,7 +32,7 @@ class SecuredPresenter extends BasePresenter
 		parent::startup();
 
 		if (!$this->user->isLoggedIn()) {
-			$this->redirect('sign:in');
+			$this->redirect('Sign:In');
 		}
 	}
 
@@ -40,7 +40,7 @@ class SecuredPresenter extends BasePresenter
 	public function actionLogout()
 	{
 		$this->user->logout($clearIdentity = true);
-		$this->redirect('sign:in');
+		$this->redirect('Sign:In');
 	}
 
 
@@ -69,7 +69,7 @@ class SecuredPresenter extends BasePresenter
 			$this->flash($e->getMessage(), 'error');
 		}
 
-		$this->redirect('applications:');
+		$this->redirect('Applications:');
 	}
 
 

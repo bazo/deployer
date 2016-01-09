@@ -45,7 +45,7 @@ class SignPresenter extends BasePresenter
 
 		try {
 			$this->getUser()->login($values->login, $values->password);
-			$this->redirect('applications:');
+			$this->redirect('Applications:');
 		} catch (Nette\Security\AuthenticationException $e) {
 			$form->addError($e->getMessage());
 		}
@@ -55,7 +55,7 @@ class SignPresenter extends BasePresenter
 	{
 		$this->getUser()->logout();
 		$this->flashMessage('You have been signed out.');
-		$this->redirect('in');
+		$this->redirect('In');
 	}
 
 }
