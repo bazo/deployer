@@ -1,16 +1,20 @@
 #!/usr/bin/env php
 <?php
 
+use Symfony\Component\Console\Application;
+use Tracy\Debugger;
+
 // Let bootstrap create Dependency Injection container.
-$configurator = require __DIR__ . '/app/bootstrap.php';
-$configurator->addConfig(__DIR__.'/app/config/console.neon');
-$container = $configurator->createContainer();
+$configurator	 = require __DIR__ . '/app/bootstrap.php';
+$configurator->addConfig(__DIR__ . '/app/config/console.neon');
+$container		 = $configurator->createContainer();
 
 //workaraound for kdyby redis panel
-Nette\Diagnostics\Debugger::getBlueScreen();
-Nette\Diagnostics\Debugger::getBar();
+Debugger::getBlueScreen();
+Debugger::getBar();
 
 // Run console
 if (PHP_SAPI === 'cli') {
-	$container->getService('console')->run();
+	$console = $container->getByType(Application::class);
+	$console->run();
 }

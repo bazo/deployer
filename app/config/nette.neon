@@ -1,8 +1,7 @@
-nette:
-	application:
-		errorPresenter: Error
-		mapping:
-			*: Deployer\*Module\*Presenter
+application:
+	errorPresenter: Error
+	mapping:
+		*: Deployer\*Module\*Presenter
 
-	session:
-		expiration: 14 days
+session:
+	expiration: 14 days
