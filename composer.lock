@@ -2440,20 +2440,21 @@
         },
         {
             "name": "nette/robot-loader",
-            "version": "dev-master",
+            "version": "v2.4.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nette/robot-loader.git",
-                "reference": "518c44697a50da5df8fe34411f2410caa19dfaec"
+                "reference": "f23f8885624b249d5ec7bb525b9d6b007ab00293"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nette/robot-loader/zipball/518c44697a50da5df8fe34411f2410caa19dfaec",
-                "reference": "518c44697a50da5df8fe34411f2410caa19dfaec",
+                "url": "https://api.github.com/repos/nette/robot-loader/zipball/f23f8885624b249d5ec7bb525b9d6b007ab00293",
+                "reference": "f23f8885624b249d5ec7bb525b9d6b007ab00293",
                 "shasum": ""
             },
             "require": {
                 "ext-tokenizer": "*",
+                "nette/caching": "~2.2",
                 "nette/finder": "~2.3",
                 "nette/utils": "~2.4",
                 "php": ">=5.6.0"
@@ -2468,7 +2469,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.0-dev"
+                    "dev-master": "2.4-dev"
                 }
             },
             "autoload": {
@@ -2494,7 +2495,7 @@
             ],
             "description": "Nette RobotLoader: comfortable autoloading",
             "homepage": "https://nette.org",
-            "time": "2017-01-04 14:22:42"
+            "time": "2017-01-02 17:15:22"
         },
         {
             "name": "nette/safe-stream",
@@ -2611,16 +2612,16 @@
         },
         {
             "name": "nette/tokenizer",
-            "version": "dev-master",
+            "version": "v2.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nette/tokenizer.git",
-                "reference": "6941451214ef1db32328530284629ab639f62221"
+                "reference": "0fec1255bd2d062229e81cad3bfba806a8ea6096"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nette/tokenizer/zipball/6941451214ef1db32328530284629ab639f62221",
-                "reference": "6941451214ef1db32328530284629ab639f62221",
+                "url": "https://api.github.com/repos/nette/tokenizer/zipball/0fec1255bd2d062229e81cad3bfba806a8ea6096",
+                "reference": "0fec1255bd2d062229e81cad3bfba806a8ea6096",
                 "shasum": ""
             },
             "require": {
@@ -2657,7 +2658,7 @@
             ],
             "description": "Nette Tokenizer",
             "homepage": "https://nette.org",
-            "time": "2017-01-04 14:26:29"
+            "time": "2016-04-21 13:06:32"
         },
         {
             "name": "nette/utils",
