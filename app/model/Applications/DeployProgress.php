@@ -95,7 +95,12 @@ class DeployProgress implements EventSubscriberInterface
 
 	public function addMessage($applicationId, $message)
 	{
-		$this->redis->rPush('messages:' . $applicationId, $message);
+		try {
+			$this->redis->rPush('messages:' . $applicationId, $message);
+		} catch(\Exception $e) {
+			//ignore
+		}
+	
 		return $this;
 	}
 
